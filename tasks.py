@@ -28,6 +28,7 @@ def gui(ctx):
     experiment = Experiment.from_gui('gui.yml')
     print(experiment.condition_vars)
 
+
 @task
 def run_trial(ctx):
     """Run a single trial."""
@@ -36,6 +37,7 @@ def run_trial(ctx):
     trial_data = experiment.run_trial()
     print(trial_data)
     experiment.quit()
+
 
 @task
 def run_test_trials(ctx, n_test_trials=1):
@@ -116,10 +118,10 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
     if open_after:
         ctx.run('open %s' % (output, ), echo=True)
 
+
 @task
 def draw_search_radius(ctx, grid_pos='10-10', search_radius=8):
     grid_positions = create_grid(search_radius, search_radius, centroid=pos_from_str(grid_pos))
-
 
 
 @task
