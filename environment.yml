@@ -70,14 +70,19 @@ dependencies:
   - wxpython=3.0=py27_0
   - xz=5.2.2=1
   - pip:
+    - attrs==17.4.0
     - decorator==4.0.11
+    - funcsigs==1.0.2
     - future==0.16.0
     - imageio==2.1.2
     - invoke==0.22.1
     - moviepy==0.2.3.2
+    - pluggy==0.6.0
     - psychopy==1.85.2
     - psychopy-ext==0.6.0.4
+    - py==1.5.2
     - pyosf==1.0.5
+    - pytest==3.4.0
     - python-bidi==0.4.0
     - tables==3.3.0
     - tqdm==4.11.2
