@@ -6,7 +6,7 @@ from numpy import linspace
 from invoke import task
 
 from gems import Experiment, SimpleHill
-from gems.display import create_stim_positions
+from gems.display import create_grid_positions
 
 
 @task
@@ -98,7 +98,7 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
     grid_positions = list(product(positions, positions))
     gabors = landscape.get_gabors(grid_positions)
 
-    stim_positions = create_stim_positions(n_rows=grid_size, n_cols=grid_size,
+    stim_positions = create_grid_positions(n_rows=grid_size, n_cols=grid_size,
                                            win_size=win.size,
                                            stim_size=gabor_size)
 

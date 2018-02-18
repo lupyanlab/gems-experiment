@@ -8,7 +8,7 @@ instructions: |
   After arriving, you seek out a teacher who can teach you which gems are worth more than others. Pay close attention to the instructions you get from your teacher, as it will help you to find the most valuable gems in the game.
 
   Press the SPACEBAR to read the teacher's instructions.
-training_title: The difference between cheap and expensive gems.
+training_title: The difference between cheap and expensive gems
 training: |
   {training_instructions}
   Your teacher offers to take you to a nearby quarry to find some gems. The teacher will show you a few gems to look at. You have to click on the one you think is the most valuable. Then the teacher will show you the value of the one you clicked, and the values of the ones you did not click. Your goal is to learn for yourself how to tell the most expensive gem on each trial.
