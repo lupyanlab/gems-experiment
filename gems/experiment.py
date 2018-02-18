@@ -4,9 +4,10 @@ from os import path
 import yaml
 
 from psychopy import visual, core, event
+import pandas
 
 from .config import PKG_ROOT
-from .landscape import SimpleHill
+from .landscape import StaticLandscape
 from .display import create_radial_positions, create_grid_positions
 from .util import get_subj_info, pos_to_str, pos_list_to_str
 from .data import output_filepath_from_subj_info, DATA_COLUMNS
@@ -43,6 +44,8 @@ class Experiment(object):
 
     fixation_duration = 0.5
 
+    training_landscape = 'SimpleHill'
+
     @classmethod
     def from_gui(cls, gui_yaml):
         subj_info = get_subj_info(gui_yaml,
@@ -60,10 +63,13 @@ class Experiment(object):
         self.stim_positions = create_radial_positions(self.n_search_items,
             radius=self.stim_radius)
 
-        self.landscape = SimpleHill()
-        self.landscape.grating_stim_kwargs = dict(
+        self.grating_stim_kwargs = dict(
             win=self.win,
             size=self.gabor_size)
+
+        # Set default landscape
+        self.landscape = StaticLandscape('SimpleHill')
+        self.landscape.grating_stim_kwargs = self.grating_stim_kwargs.copy()
 
         self.score = 0
 
@@ -130,6 +136,10 @@ class Experiment(object):
         return self.output_file
 
     def run_training_trials(self, n_training_trials=10):
+        training_landscape = self.condition_vars.get('training_landscape',
+                                                     self.training_landscape)
+        self.landscape = StaticLandscape(training_landscape)
+
         # Set pos to training pos
         quarry_start_pos = self.condition_vars.get('training_pos', self.training_pos)
         self.pos = quarry_start_pos

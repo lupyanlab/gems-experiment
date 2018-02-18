@@ -1,12 +1,13 @@
+from os import path
 from collections import namedtuple, OrderedDict
 from psychopy import visual
 from itertools import product
 from numpy import linspace, random
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 
 from .util import create_grid
 from .score_funcs import simple_hill
-
+from .config import LANDSCAPE_FILES
 
 
 Gabor = namedtuple('Gabor', 'ori sf')
@@ -42,6 +43,7 @@ class Landscape(object):
         self._gems = {}
 
         self.prng = random.RandomState(seed)
+
 
     def get(self, grid_pos):
         """Get the Gem at this position, creating it if necessary."""
@@ -133,3 +135,17 @@ class SimpleHill(Landscape):
         if self.jitter:
             score += self.jitters[grid_pos]
         return score
+
+
+class StaticLandscape(Landscape):
+    def __init__(self, csv_file):
+        if not path.exists(csv_file):
+            csv_file = path.join(LANDSCAPE_FILES, '{}.csv'.format(csv_file))
+
+        assert path.exists(csv_file), 'landscape file {} not found'.format(csv_file)
+
+        data = read_csv(csv_file)
+        self.scores = {(row.x, row.y): row.score for row in data.itertuples()}
+
+    def get_score(self, grid_pos):
+        return self.scores[grid_pos]
