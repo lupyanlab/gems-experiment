@@ -8,3 +8,9 @@ def simple_hill(grid_pos, normalize=True):
         score = int((score/max_height) * 100)
 
     return score
+
+def orientation_bias(grid_pos, normalize=True):
+    pass
+
+def spatial_frequency_bias(grid_pos, normalize=True):
+    pass

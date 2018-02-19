@@ -1,7 +1,12 @@
 from itertools import product
 from numpy import linspace
+from psychopy.tools.coordinatetools import pol2cart
 
-def create_stim_positions(n_rows, n_cols, win_size, stim_size=0):
+def create_radial_positions(n_positions, radius):
+    thetas = linspace(0, 360, n_positions, endpoint=False)
+    return [pol2cart(theta, radius) for theta in thetas]
+
+def create_grid_positions(n_rows, n_cols, win_size, stim_size=0):
     win_width, win_height = win_size
     win_left, win_right = -win_width/2, win_width/2
     win_bottom, win_top = -win_height/2, win_height/2

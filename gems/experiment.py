@@ -4,10 +4,11 @@ from os import path
 import yaml
 
 from psychopy import visual, core, event
+import pandas
 
 from .config import PKG_ROOT
-from .landscape import SimpleHill
-from .display import create_stim_positions
+from .landscape import StaticLandscape
+from .display import create_radial_positions, create_grid_positions
 from .util import get_subj_info, pos_to_str, pos_list_to_str
 from .data import output_filepath_from_subj_info, DATA_COLUMNS
 from .validation import check_output_filepath_exists, verify_subj_info_strings, parse_subj_info_strings
@@ -33,9 +34,17 @@ class Experiment(object):
 
     n_search_items = 9
     search_radius = 8
+
+    # pix between fixation and center of grating stim
+    stim_radius = 200
+
     training_pos = (10, 10)
     starting_pos = (10, 10)
     pos = (0, 0)
+
+    fixation_duration = 0.5
+
+    training_landscape = 'SimpleHill'
 
     @classmethod
     def from_gui(cls, gui_yaml):
@@ -51,15 +60,16 @@ class Experiment(object):
 
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
 
-        n_rows, n_cols = 3, 3
-        assert n_rows * n_cols == self.n_search_items
-        self.stim_positions = create_stim_positions(n_rows=3, n_cols=3,
-            win_size=(self.win.size[1], self.win.size[1]), stim_size=(self.gabor_size * 4))
+        self.stim_positions = create_radial_positions(self.n_search_items,
+            radius=self.stim_radius)
 
-        self.landscape = SimpleHill()
-        self.landscape.grating_stim_kwargs = dict(
+        self.grating_stim_kwargs = dict(
             win=self.win,
             size=self.gabor_size)
+
+        # Set default landscape
+        self.landscape = StaticLandscape('SimpleHill')
+        self.landscape.grating_stim_kwargs = self.grating_stim_kwargs.copy()
 
         self.score = 0
 
@@ -77,6 +87,8 @@ class Experiment(object):
             height=30,
             bold=True
         )
+
+        self.fixation = self.make_text('+', height=30, pos=(0,0))
 
     def run(self):
         self.show_welcome()
@@ -124,6 +136,10 @@ class Experiment(object):
         return self.output_file
 
     def run_training_trials(self, n_training_trials=10):
+        training_landscape = self.condition_vars.get('training_landscape',
+                                                     self.training_landscape)
+        self.landscape = StaticLandscape(training_landscape)
+
         # Set pos to training pos
         quarry_start_pos = self.condition_vars.get('training_pos', self.training_pos)
         self.pos = quarry_start_pos
@@ -149,11 +165,6 @@ class Experiment(object):
             self.write_trial(trial_data)
 
     def run_trial(self, training=False):
-        self.draw_score()
-
-        self.trial_header.text = self.texts['trial']['instructions']
-        self.trial_header.draw()
-
         gabors = self.landscape.sample_gabors(
             self.pos,
             self.search_radius,
@@ -172,23 +183,38 @@ class Experiment(object):
             stims=pos_list_to_str(gabors.keys()),
         )
 
+        self.trial_header.text = self.texts['trial']['instructions']
+
+        # Begin trial presentation ----
+
+        self.trial_header.draw()
+        self.draw_score()
+        self.fixation.draw()
+        self.win.flip()
+        core.wait(self.fixation_duration)
+
+        self.trial_header.draw()
+        self.draw_score()
+        self.fixation.draw()
         for pos, grid_pos in zip(self.stim_positions, gabors.keys()):
             gabor = gabors[grid_pos]
             gabor.pos = pos
             gabor.draw()
-
         self.win.flip()
+
         grid_pos, gabor_pos, time = self.get_mouse_click(gabors)
+
         score = self.landscape.get_score(grid_pos)
         self.pos = grid_pos      # update current pos
         prev_score = self.score
         self.score += score      # update current score
 
         trial_data['selected'] = pos_to_str(grid_pos)
-        trial_data['rt'] = time
+        trial_data['rt'] = round(time, 2)
         trial_data['score'] = score
         trial_data['total'] = self.score
 
+        # Draw gabors again
         for gabor in gabors.values():
             gabor.draw()
 
@@ -204,6 +230,7 @@ class Experiment(object):
             selected_label.color = 'green'
             for other_grid_pos, gabor in gabors.items():
                 if grid_pos == other_grid_pos:
+                    # the label for this pos has already been drawn
                     continue
                 other_score = self.landscape.get_score(other_grid_pos)
                 other_label = self.label_gabor_score(other_score, gabor.pos)
