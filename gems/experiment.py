@@ -7,7 +7,7 @@ from psychopy import visual, core, event
 import pandas
 
 from .config import PKG_ROOT
-from .landscape import StaticLandscape
+from .landscape import *
 from .display import create_radial_positions, create_grid_positions
 from .util import get_subj_info, pos_to_str, pos_list_to_str
 from .data import output_filepath_from_subj_info, DATA_COLUMNS
@@ -68,7 +68,7 @@ class Experiment(object):
             size=self.gabor_size)
 
         # Set default landscape
-        self.landscape = StaticLandscape('SimpleHill')
+        self.landscape = SimpleHill()
         self.landscape.grating_stim_kwargs.update(self.grating_stim_kwargs)
 
         self.score = 0
@@ -90,7 +90,7 @@ class Experiment(object):
 
         self.fixation = self.make_text('+', height=30, pos=(0,0))
 
-        self.starting_positions = parse_pos_list(self.condition_vars.get('start_pos_list'))
+        self.starting_positions = self.condition_vars.get('starting_positions')
 
     def run(self):
         self.show_welcome()
@@ -140,9 +140,9 @@ class Experiment(object):
     def run_training_trials(self, n_training_trials=10):
         instructions_condition = self.condition_vars['instructions_condition']
         self.landscape = dict(
-            orientation=StaticLandscape('OrientationBias'),
-            spatial_frequency=StaticLandscape('SpatialFrequencyBias')
-        )[intructions_condition]
+            orientation=OrientationBias(),
+            spatial_frequency=SpatialFrequencyBias(),
+        )[instructions_condition]
 
         # Set pos to training pos
         quarry_start_pos = self.condition_vars.get('training_pos', self.training_pos)
@@ -158,10 +158,10 @@ class Experiment(object):
 
     def run_test_trials(self, n_test_trials=10):
         landscapes = {
-            1: StaticLandscape('SimpleHillA'),
-            2: StaticLandscape('SimpleHillB'),
-            3: StaticLandscape('SimpleHillC'),
-            4: StaticLandscape('SimpleHillD'),
+            0: SimpleHillA(),
+            1: SimpleHillB(),
+            2: SimpleHillC(),
+            3: SimpleHillD(),
         }
 
         for quarry_ix, start_pos in enumerate(self.starting_positions):

@@ -23,7 +23,7 @@ class Landscape(object):
     """
     min_ori, max_ori = 180, 0
     min_sf, max_sf = 0.05, 0.2
-    n_rows, n_cols = None, None
+    n_rows, n_cols = 100, 100
     grating_stim_kwargs = dict()
 
     def __init__(self, n_rows=None, n_cols=None, score_func=None, seed=None):
@@ -37,13 +37,17 @@ class Landscape(object):
         self.min_x, self.min_y = 0, 0
         self.max_x, self.max_y = self.dims
 
-        self.orientations = linspace(self.min_ori, self.max_ori,
-                                     num=self.n_cols, endpoint=False)
-        self.spatial_frequencies = linspace(self.min_sf, self.max_sf, num=self.n_rows)
-
         self._gems = {}
 
         self.prng = random.RandomState(seed)
+
+    @property
+    def orientations(self):
+        return linspace(self.min_ori, self.max_ori, num=self.n_cols, endpoint=False)
+
+    @property
+    def spatial_frequencies(self):
+        return linspace(self.min_sf, self.max_sf, num=self.n_rows)
 
 
     def get(self, grid_pos):
@@ -122,7 +126,6 @@ min_sf, max_sf = 0.05, 0.2
 
 
 class SimpleHill(Landscape):
-    n_rows, n_cols = 100, 100
     min_ori, max_ori = min_ori, max_ori
     min_sf, max_sf = min_sf, max_sf
 

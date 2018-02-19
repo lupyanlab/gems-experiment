@@ -14,7 +14,7 @@ def pos_list_to_str(pos_list):
     return ';'.join([pos_to_str(pos) for pos in pos_list])
 
 def parse_pos(str_pos):
-    return map(int, str_pos.split(','))
+    return map(int, str_pos.split('-'))
 
 def parse_pos_list(str_pos_list):
     return [parse_pos(str_pos) for str_pos in str_pos_list.split(';')]
