@@ -90,6 +90,8 @@ class Experiment(object):
 
         self.fixation = self.make_text('+', height=30, pos=(0,0))
 
+        self.starting_positions = parse_pos_list(self.condition_vars.get('start_pos_list'))
+
     def run(self):
         self.show_welcome()
         self.show_training()
@@ -155,16 +157,28 @@ class Experiment(object):
             self.write_trial(trial_data)
 
     def run_test_trials(self, n_test_trials=10):
-        quarry_start_pos = self.condition_vars.get('starting_pos', self.starting_pos)
-        self.pos = quarry_start_pos
-        for trial in range(n_test_trials):
-            trial_data = self.run_trial()
-            trial_data['quarry'] = 1
-            trial_data['starting_pos'] = pos_to_str(quarry_start_pos)
-            trial_data['feedback'] = 'selected'
-            trial_data['trial'] = trial
+        landscapes = {
+            1: StaticLandscape('SimpleHillA'),
+            2: StaticLandscape('SimpleHillB'),
+            3: StaticLandscape('SimpleHillC'),
+            4: StaticLandscape('SimpleHillD'),
+        }
 
-            self.write_trial(trial_data)
+        for quarry_ix, start_pos in enumerate(self.starting_positions):
+            if quarry_ix > 0:
+                self.show_break()
+
+            self.landscape = landscapes[quarry_ix]
+            self.pos = start_pos
+
+            for trial in range(n_test_trials):
+                trial_data = self.run_trial()
+                trial_data['quarry'] = quarry_ix
+                trial_data['starting_pos'] = pos_to_str(start_pos)
+                trial_data['feedback'] = 'selected'
+                trial_data['trial'] = trial
+
+                self.write_trial(trial_data)
 
     def run_trial(self, training=False):
         gabors = self.landscape.sample_gabors(

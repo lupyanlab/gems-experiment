@@ -10,22 +10,10 @@
     - orientation
     - spatial_frequency
 3:
-  name: search_radius
-  prompt: Grid radius
-  default: 8
-4:
-  name: n_search_items
-  prompt: Items per trial
-  default: 9
-5:
-  name: training_pos
-  prompt: Position for training
-  default: 10,10
-6:
-  name: starting_pos
+  name: start_pos_list
   prompt: Position for testing
-  default: 10,90
-7:
+  default: 0-0;0-0;0-0;0-0
+4:
   name: experimenter
   prompt: Experimenter initials
   default: XXX
