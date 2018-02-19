@@ -137,6 +137,14 @@ class SimpleHill(Landscape):
         return score
 
 
+class OrientationBias(Landscape):
+    pass
+
+
+class SpatialFrequencyBias(Landscape):
+    pass
+
+
 class StaticLandscape(Landscape):
     def __init__(self, csv_file):
         if not path.exists(csv_file):
