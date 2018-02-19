@@ -6,7 +6,7 @@ from numpy import linspace, random
 from pandas import DataFrame, read_csv
 
 from .util import create_grid
-from .score_funcs import simple_hill
+from .score_funcs import simple_hill, orientation_bias, spatial_frequency_bias
 from .config import LANDSCAPE_FILES
 
 
@@ -137,12 +137,20 @@ class SimpleHill(Landscape):
         return score
 
 
-class OrientationBias(Landscape):
-    pass
+class OrientationBias(SimpleHill):
+    def get_score(self, grid_pos):
+        score = orientation_bias(grid_pos, normalize=self.normalize)
+        if self.jitter:
+            score += self.jitters[grid_pos]
+        return score
 
 
-class SpatialFrequencyBias(Landscape):
-    pass
+class SpatialFrequencyBias(SimpleHill):
+    def get_score(self, grid_pos):
+        score = spatial_frequency_bias(grid_pos, normalize=self.normalize)
+        if self.jitter:
+            score += self.jitters[grid_pos]
+        return score
 
 
 class StaticLandscape(Landscape):
