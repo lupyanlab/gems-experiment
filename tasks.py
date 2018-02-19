@@ -1,6 +1,6 @@
 import sys
 import subprocess
-from os import path
+from os import path, mkdir
 from itertools import product
 from numpy import linspace
 
@@ -76,10 +76,24 @@ def print_landscape(ctx, name, output=None, move_to_r_pkg=False):
         output = path.join(gems.config.LANDSCAPE_FILES, '{}.csv'.format(name))
 
     if move_to_r_pkg:
-        output = path.join('../data/data-raw/landscapes', '{}.csv'.format(name))
+        landscapes_dir = '../data/data-raw/landscapes'
+        if not path.isdir(landscapes_dir):
+            mkdir(landscapes_dir)
+        output = path.join(landscapes_dir, '{}.csv'.format(name))
 
     landscape = Landscape()
     landscape.export(output)
+
+
+@task
+def draw_landscape(ctx, name, output=None, open_after=False):
+    """Draw the landscape as a 3D plot."""
+    if output is None:
+        output = path.join(gems.config.LANDSCAPE_FILES, '{}.pdf'.format(name))
+    R_command = 'Rscript -e "gems::save_landscape({name!r}, {output!r})"'
+    ctx.run(R_command.format(name=name, output=output), echo=True)
+    if open_after:
+        ctx.run('open %s' % (output, ), echo=True)
 
 
 @task
@@ -141,15 +155,3 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
 @task
 def draw_search_radius(ctx, grid_pos='10-10', search_radius=8):
     grid_positions = create_grid(search_radius, search_radius, centroid=pos_from_str(grid_pos))
-
-
-@task
-def draw_landscape(ctx, landscape_data='simple_hill.csv',
-                   output='simple_hill.pdf', open_after=False):
-    """Draw the landscape as a 3D plot."""
-    R_command = 'Rscript draw_landscape.R {landscape_data} {output}'
-    ctx.run(R_command.format(landscape_data=landscape_data, output=output),
-            echo=True)
-
-    if open_after:
-        ctx.run('open %s' % (output, ), echo=True)
