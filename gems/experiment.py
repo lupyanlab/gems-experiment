@@ -69,7 +69,7 @@ class Experiment(object):
 
         # Set default landscape
         self.landscape = StaticLandscape('SimpleHill')
-        self.landscape.grating_stim_kwargs = self.grating_stim_kwargs.copy()
+        self.landscape.grating_stim_kwargs.update(self.grating_stim_kwargs)
 
         self.score = 0
 
@@ -136,9 +136,11 @@ class Experiment(object):
         return self.output_file
 
     def run_training_trials(self, n_training_trials=10):
-        training_landscape = self.condition_vars.get('training_landscape',
-                                                     self.training_landscape)
-        self.landscape = StaticLandscape(training_landscape)
+        instructions_condition = self.condition_vars['instructions_condition']
+        self.landscape = dict(
+            orientation=StaticLandscape('OrientationBias'),
+            spatial_frequency=StaticLandscape('SpatialFrequencyBias')
+        )[intructions_condition]
 
         # Set pos to training pos
         quarry_start_pos = self.condition_vars.get('training_pos', self.training_pos)

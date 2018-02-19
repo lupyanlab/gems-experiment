@@ -24,6 +24,7 @@ class Landscape(object):
     min_ori, max_ori = 180, 0
     min_sf, max_sf = 0.05, 0.2
     n_rows, n_cols = None, None
+    grating_stim_kwargs = dict()
 
     def __init__(self, n_rows=None, n_cols=None, score_func=None, seed=None):
         self.n_rows = n_rows or self.n_rows
@@ -115,9 +116,15 @@ class Landscape(object):
         return (x >= self.min_x and x < self.max_x and
                 y >= self.min_y and y < self.max_y)
 
+
+min_ori, max_ori = 20, 200
+min_sf, max_sf = 0.05, 0.2
+
+
 class SimpleHill(Landscape):
-    n_rows = 100
-    n_cols = 100
+    n_rows, n_cols = 100, 100
+    min_ori, max_ori = min_ori, max_ori
+    min_sf, max_sf = min_sf, max_sf
 
     def __init__(self, seed=5978, normalize=True, jitter=True, **kwargs):
         super(SimpleHill, self).__init__(**kwargs)
@@ -135,6 +142,22 @@ class SimpleHill(Landscape):
         if self.jitter:
             score += self.jitters[grid_pos]
         return score
+
+
+class SimpleHillA(SimpleHill):
+    pass
+
+class SimpleHillB(SimpleHill):
+    min_ori, max_ori = max_ori, min_ori
+    min_sf, max_sf = min_sf, max_sf
+
+class SimpleHillC(SimpleHill):
+    min_ori, max_ori = min_ori, max_ori
+    min_sf, max_sf = max_sf, min_sf
+
+class SimpleHillD(SimpleHill):
+    min_ori, max_ori = max_ori, min_ori
+    min_sf, max_sf = max_sf, min_sf
 
 
 class OrientationBias(SimpleHill):

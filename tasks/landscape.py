@@ -4,8 +4,13 @@ from invoke import task
 import gems
 
 
+landscapes_dir = '../data/data-raw/landscapes'
+if not path.isdir(landscapes_dir):
+    mkdir(landscapes_dir)
+
+
 @task
-def data(ctx, name, output=None, move_to_r_pkg=False):
+def data(ctx, name, move_to_r_pkg=False):
     """Save the landscape to a tidy csv.
 
     Examples:
@@ -13,114 +18,109 @@ def data(ctx, name, output=None, move_to_r_pkg=False):
         $ inv landscape.data SimpleHill
 
     """
-    Landscape = getattr(gems.landscape, name, None)
-    if Landscape is None:
-        msg = "Landscape '{}' not found."
-        print(msg.format(name))
-        sys.exit(1)
+    landscapes = get_landscapes_from_name(name)
 
-    if output is None:
-        output = path.join(gems.config.LANDSCAPE_FILES, '{}.csv'.format(name))
+    for name, landscape in landscapes.items():
+        if move_to_r_pkg:
+            output = path.join(landscapes_dir, '{}.csv'.format(name))
+        else:
+            output = path.join(gems.config.LANDSCAPE_FILES, '{}.csv'.format(name))
 
-    if move_to_r_pkg:
-        landscapes_dir = '../data/data-raw/landscapes'
-        if not path.isdir(landscapes_dir):
-            mkdir(landscapes_dir)
-        output = path.join(landscapes_dir, '{}.csv'.format(name))
-
-    landscape = Landscape()
-    landscape.export(output)
+        landscape.export(output)
 
 
 @task
-def draw(ctx, name, output=None, open_after=False):
+def draw(ctx, name, open_after=False):
     """Draw the landscape as a 3D plot."""
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
 
-    Landscape = getattr(gems.landscape, name, None)
-    if Landscape is None:
-        msg = "Landscape '{}' not found."
-        print(msg.format(name))
-        sys.exit(1)
+    landscapes = get_landscapes_from_name(name)
+    for name, landscape in landscapes.items():
+        data = landscape.to_tidy_data()
+        grid = data[['x', 'y', 'score']].pivot('x', 'y', 'score')
 
-    if output is None:
-        output = path.join(gems.config.LANDSCAPE_FILES, '{}.pdf'.format(name))
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.contour3D(range(100), range(100), grid, 50)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('score')
 
-    landscape = Landscape()
-    data = landscape.to_tidy_data()
-    grid = data[['x', 'y', 'score']].pivot('x', 'y', 'score')
+        output = path.join(gems.config.LANDSCAPE_FILES, '{}Scores.pdf'.format(name))
+        fig.savefig(output)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.contour3D(range(100), range(100), grid, 50)
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('score')
-    fig.savefig(output)
-
-    if open_after:
-        ctx.run('open {}'.format(output), echo=True)
+        if open_after:
+            ctx.run('open {}'.format(output), echo=True)
 
 
 @task
-def gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
-           open_after=False):
+def gabors(ctx, name, output=None, open_after=False):
     """Draw gabors sampled from the landscape.
 
     Examples:
-    $ inv draw-gabors -w 800 -p
+
+        $ inv landscape.draw SimpleHill
+
     """
     from psychopy import visual
     from numpy import linspace
 
-    if win_size is None:
-        fullscr = True
-        size = (1, 1)  # Ignored when full screen
-    else:
-        fullscr = False
-        size = map(int, win_size.split(','))
-        if len(size) == 1:
-            size = (size, size)
+    win = visual.Window(size=(800, 800), units='pix', color=(0.6, 0.6, 0.6))
 
-    win = visual.Window(size=size, units='pix', color=(0.6, 0.6, 0.6),
-                        fullscr=fullscr)
-
+    grid_size = 10
     positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
     grid_positions = list(product(positions, positions))
 
     gabor_size = 60
-
-    landscape = gems.SimpleHill()
-    landscape.grating_stim_kwargs = {'win': win, 'size': gabor_size}
-
-    # Get gabors for each point in the grid
     positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
     grid_positions = list(product(positions, positions))
-    gabors = landscape.get_gabors(grid_positions)
-
     stim_positions = gems.create_grid_positions(n_rows=grid_size, n_cols=grid_size,
                                            win_size=win.size,
                                            stim_size=gabor_size)
 
-    for (grid_pos, stim_pos) in zip(grid_positions, stim_positions):
-        gabor = gabors[grid_pos]
-        gabor.pos = stim_pos
-        gabor.draw()
+    landscapes = get_landscapes_from_name(name)
+    for name, landscape in landscapes.items():
+        landscape.grating_stim_kwargs.update({'win': win, 'size': gabor_size})
+        gabors = landscape.get_grid_of_grating_stims(grid_positions)
 
-        label = visual.TextStim(win, '%s' % (grid_pos, ), pos=(stim_pos[0], stim_pos[1]+gabor_size/2), alignVert='bottom')
-        label.draw()
+        for (grid_pos, stim_pos) in zip(grid_positions, stim_positions):
+            gabor = gabors[grid_pos]
+            gabor.pos = stim_pos
+            gabor.draw()
 
-    win.flip()
-    win.getMovieFrame()
-    win.saveMovieFrames(output)
-    win.close()
+            label = visual.TextStim(win, '%s' % (grid_pos, ), pos=(stim_pos[0], stim_pos[1]+gabor_size/2), alignVert='bottom')
+            label.draw()
 
-    if open_after:
-        ctx.run('open %s' % (output, ), echo=True)
+        win.flip()
+        win.getMovieFrame()
+
+        output = path.join(gems.config.LANDSCAPE_FILES, '{}Gems.png'.format(name))
+        win.saveMovieFrames(output)
+
+        if open_after:
+            ctx.run('open %s' % (output, ), echo=True)
 
 
 @task
 def radius(ctx, grid_pos='10-10', search_radius=8):
     """Draw gabors in a given search radius."""
     grid_positions = gems.create_grid(search_radius, search_radius, centroid=pos_from_str(grid_pos))
+
+
+def get_landscapes_from_name(name):
+    if name == 'all':
+        names = ['SimpleHill', 'SimpleHillA', 'SimpleHillB', 'SimpleHillC', 'SimpleHillD', 'OrientationBias', 'SpatialFrequencyBias']
+    else:
+        names = [name, ]
+
+    landscapes = {}
+    for name in names:
+        Landscape = getattr(gems.landscape, name, None)
+        if Landscape is None:
+            msg = "Landscape '{}' not found."
+            print(msg.format(name))
+            sys.exit(1)
+        landscapes[name] = Landscape()
+
+    return landscapes
