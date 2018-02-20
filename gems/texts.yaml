@@ -37,4 +37,4 @@ end: |
   Press the SPACEBAR to exit this screen, and open the survey.
 trial:
   instructions: Click on the gem you think is most valuable.
-  feedback: Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.
+  training_feedback: Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.

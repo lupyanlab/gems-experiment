@@ -18,4 +18,5 @@ def verify_subj_info_strings(subj_info):
 def parse_subj_info_strings(subj_info):
     new_subj_info = subj_info.copy()
     new_subj_info['starting_positions'] = parse_pos_list(subj_info['start_pos_list'])
+    new_subj_info['filename'] = output_filepath_from_subj_info(subj_info)
     return new_subj_info

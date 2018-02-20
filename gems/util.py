@@ -31,7 +31,7 @@ def create_grid(n_rows, n_cols):
     return product(range(n_rows), range(n_cols))
 
 
-def get_subj_info(gui_yaml, check_exists, verify=lambda subj_info: True, save_order=True):
+def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
     """Create a psychopy.gui from a yaml config file.
 
     The first time the experiment is run, a pickle of that subject's settings
@@ -47,6 +47,17 @@ def get_subj_info(gui_yaml, check_exists, verify=lambda subj_info: True, save_or
         verify, an error is displayed.
     save_order: bool, Should the key order be saved in "_order"? Defaults to
         True.
+
+
+    Expected YAML data
+    ------------------
+
+        # contents of gui.yml
+        ---
+        1:
+          name: subj_id
+          prompt: Subject identifier
+          default: GEMS100
 
     Returns
     -------
@@ -89,6 +100,7 @@ def get_subj_info(gui_yaml, check_exists, verify=lambda subj_info: True, save_or
     # Set fixed fields
     gui_data['date'] = data.getDateStr()
     gui_data['computer'] = socket.gethostname()
+
     fixed_fields = ['date', 'computer']
 
     while True:
