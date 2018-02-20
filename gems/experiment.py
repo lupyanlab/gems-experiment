@@ -7,6 +7,7 @@ from psychopy import visual, core, event
 import pandas
 
 from .config import PKG_ROOT
+from . import landscape
 from .landscape import *
 from .display import create_radial_positions, create_grid_positions
 from .util import get_subj_info, pos_to_str, pos_list_to_str
@@ -35,7 +36,7 @@ class Experiment(object):
     stim_radius = 200   # pix between fix and center of grating stim
 
     # Players ----
-    score = 0
+    total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
 
@@ -56,29 +57,37 @@ class Experiment(object):
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
+        self._cache = {}
 
         self.stim_positions = \
             create_radial_positions(self.n_search_items, radius=self.stim_radius)
 
         self.trial_header = self.make_text('',
             draw=False,
-            pos=(0, stim_radius*1.5),
+            pos=(0, self.stim_radius*2),
             alignVert='top',
             height=30,
             bold=True)
 
+        self.trial_footer = self.make_text('',
+            draw=False,
+            pos=(0, -self.stim_radius*2),
+            alignVert='bottom',
+            height = 30,
+            bold=True)
+
         self.score_text = self.make_text('',
             draw=False,
-            pos=(-stim_radius*1.5, stim_radius*1.5),
+            pos=(-self.stim_radius*2.5, self.stim_radius*2),
             alignVert='top',
             alignHoriz='left',
+            color='gold',
             height=30,
             bold=True)
 
         self.fixation = self.make_text('+', draw=False, height=30, pos=(0,0))
 
-        # Object cache
-        self._cache = {}
+        self.mouse = event.Mouse()
 
     def run(self):
         self.show_welcome()
@@ -148,7 +157,7 @@ class Experiment(object):
 
         block_data = dict(
             landscape_ix=0,
-            landscape_name=self.landscape.__name__,
+            landscape_name=self.landscape.__class__.__name__,
             starting_pos=pos_to_str(self.pos),
         )
 
@@ -183,7 +192,7 @@ class Experiment(object):
 
             block_data = dict(
                 landscape_ix=landscape_ix+1,
-                landscape_name=self.landscape.__name__,
+                landscape_name=self.landscape.__class__.__name__,
                 starting_pos=pos_to_str(self.pos),
             )
 
@@ -257,7 +266,7 @@ class Experiment(object):
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = round(time, 2)
-        trial_data['score'] = score
+        trial_data['score'] = new_gem_score
         trial_data['delta'] = diff_from_prev_gem
         trial_data['total'] = self.total_score
 
@@ -272,7 +281,14 @@ class Experiment(object):
         self.trial_header.text = self.get_trial_text('training_feedback')
         self.trial_header.draw()
 
+        self.trial_footer.text = self.get_trial_text('training_continue')
+        self.trial_footer.draw()
+
+        highlight = self.highlight_selected(selected_gabor_pos, lineColor='green')
         selected_label = self.label_gabor_score(selected_score, selected_gabor_pos, bold=True)
+
+        most_valuable_gabor = gabors[selected_grid_pos]
+        most_valuable_gabor_score = selected_score
 
         for grid_pos, gabor in gabors.items():
             gabor.draw()
@@ -284,23 +300,30 @@ class Experiment(object):
             score = self.landscape.get_score(grid_pos)
             label = self.label_gabor_score(score, gabor.pos)
 
-            if score > selected_score:
-                label.color = 'green'
-                selected_label.color = 'red'
+            delta = score - selected_score
+            if delta > 0:
+                highlight.lineColor = 'red'
+
+                if score > most_valuable_gabor_score:
+                    most_valuable_gabor = gabor
 
             label.draw()
 
+        self.draw_score()
+        highlight.draw()
         selected_label.draw()
-        self.win.flip()
 
+        self.win.flip()
         self.mouse.clickReset()
 
         while True:
             (left, _, _) = self.mouse.getPressed()
             if left:
-                break
+                pos = self.mouse.getPos()
+                if most_valuable_gabor.contains(pos):
+                    break
 
-            core.wait(0.05)
+            core.wait(0.01)
 
         self.mouse.clickReset()
 
@@ -330,18 +353,22 @@ class Experiment(object):
                 key = keys[0]
                 core.quit()
 
-            core.wait(0.05)
+            core.wait(0.01)
 
     def label_gabor_score(self, score, gabor_pos, **kwargs):
-        feedback_pos = (gabor_pos[0], gabor_pos[1]+(self.gabor_size/2))
-        feedback = self.make_text('+'+str(score), pos=feedback_pos, height=24, alignVert='bottom', **kwargs)
+        feedback_pos = (gabor_pos[0], gabor_pos[1]+self.gabor_size/2+10)
+        feedback = self.make_text('$'+str(score), pos=feedback_pos, height=30, color='gold', alignVert='bottom', **kwargs)
         return feedback
+
+    def highlight_selected(self, gabor_pos, **kwargs):
+        circle = visual.Circle(self.win, pos=gabor_pos, radius=(self.gabor_size/2)+10, lineWidth=2, **kwargs)
+        return circle
 
     def draw_score(self, prev_score=None, delta=None):
         if prev_score is not None and delta:
-            self.score_text.text = 'Your score:\n%s\n+%s\n----------\n%s' % (prev_score, delta, self.score)
+            self.score_text.text = 'Your score:\n%s\n+%s\n----------\n%s' % (prev_score, delta, self.total_score)
         else:
-            self.score_text.text = 'Your score:\n%s' % (self.score)
+            self.score_text.text = 'Your score:\n%s' % (self.total_score)
         self.score_text.draw()
 
     def show_break(self):
@@ -350,12 +377,12 @@ class Experiment(object):
         explorer = self.make_explorer()
 
         self.win.flip()
-        core.wait(self.break_minimum)
+        core.wait(self.duration_break_minimum)
 
         title.draw()
         text.draw()
         explorer.draw()
-        self.make_text(self.texts['break_complete'], pos=(0, 0))
+        self.make_text(self.texts['break_complete'], pos=(0, -10))
         self.win.flip()
         event.waitKeys(['space'])
 
@@ -406,7 +433,7 @@ class Experiment(object):
 
     def quit(self):
         core.quit()
-        self.output_file.close()
+        self.output.close()
 
     def get_var(self, key):
         return self.condition_vars.get(key, '')
@@ -438,6 +465,6 @@ class Experiment(object):
         self._cache['win'] = win
         return self._cache['win']
 
-    @property
-    def mouse(self):
-        return self._cache.setdefault('mouse', event.Mouse())
+    def use_landscape(self, name):
+        self.landscape = getattr(landscape, name)()
+        self.landscape.grating_stim_kwargs.update(self.grating_stim_kwargs)

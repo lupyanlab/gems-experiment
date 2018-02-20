@@ -105,9 +105,9 @@ def gabors(ctx, name, output=None, open_after=False):
 
 
 @task
-def radius(ctx, grid_pos='10-10', search_radius=8):
+def radius(ctx, grid_pos='10-10', sight_radius=8):
     """Draw gabors in a given search radius."""
-    grid_positions = gems.create_grid(search_radius, search_radius, centroid=pos_from_str(grid_pos))
+    grid_positions = gems.create_grid(sight_radius, sight_radius, centroid=pos_from_str(grid_pos))
 
 
 def get_landscapes_from_name(name):

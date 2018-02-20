@@ -26,7 +26,9 @@ test: |
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: You are finished at this quarry. On to the next one!
 break: |
-  You've finished collecting gems at this quarry. Take a short break before continuing to the next one. Please stay in the testing room.
+  You've finished collecting gems at this quarry. Take a short break while your ship flies to the next quarry.
+
+  When you get to the new quarry, you will likely encounter new gems you haven't seen before. Try to figure out which gems at this quarry are the most valuable.
 break_complete: When you are ready to continue, press the SPACEBAR.
 end_title: |
   Your ship is full of gems and you are ready to fly home.
@@ -37,4 +39,5 @@ end: |
   Press the SPACEBAR to exit this screen, and open the survey.
 trial:
   instructions: Click on the gem you think is most valuable.
-  training_feedback: Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.
+  training_feedback: Compare the value of the gem you selected to the values of other gems.
+  training_continue: Click on the most valuable gem to continue.
