@@ -42,6 +42,7 @@ def run_test_trials(ctx, n_test_trials=5):
     experiment = Experiment(subj_id='pierce', instructions_condition='orientation', filename='test.csv')
     experiment.use_landscape('SimpleHill')
     experiment.run_test_trials(n_test_trials)
+    experiment.quit()
 
 
 @task

@@ -276,17 +276,14 @@ class Experiment(object):
         return trial_data
 
     def give_training_feedback(self, gabors, selected_score, selected_grid_pos, selected_gabor_pos):
-        self.mouse.clickReset()
-
         self.trial_header.text = self.get_trial_text('training_feedback')
-        self.trial_header.draw()
-
         self.trial_footer.text = self.get_trial_text('training_continue')
-        self.trial_footer.draw()
 
         highlight = self.highlight_selected(selected_gabor_pos, lineColor='green')
         selected_label = self.label_gabor_score(selected_score, selected_gabor_pos, bold=True)
 
+        # Assume the most valuable gabor is the one selected,
+        # then update it later on.
         most_valuable_gabor = gabors[selected_grid_pos]
         most_valuable_gabor_score = selected_score
 
@@ -301,30 +298,29 @@ class Experiment(object):
             label = self.label_gabor_score(score, gabor.pos)
 
             delta = score - selected_score
+
             if delta > 0:
+                # the most valuable gabor was not selected
                 highlight.lineColor = 'red'
 
-                if score > most_valuable_gabor_score:
-                    most_valuable_gabor = gabor
+            if score > most_valuable_gabor_score:
+                # update the most valuable gabor
+                most_valuable_gabor = gabor
+                most_valuable_gabor_score = score
+                target_gabor = {grid_pos: gabor}
 
             label.draw()
 
+        self.trial_header.draw()
+        self.trial_footer.draw()
         self.draw_score()
         highlight.draw()
         selected_label.draw()
 
         self.win.flip()
-        self.mouse.clickReset()
 
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                pos = self.mouse.getPos()
-                if most_valuable_gabor.contains(pos):
-                    break
 
-            core.wait(0.01)
-
+        self.get_clicked_gabor(target_gabor)
         self.mouse.clickReset()
 
     def give_selected_feedback(self, gabors, selected_score, selected_grid_pos, selected_gabor_pos):
@@ -344,8 +340,10 @@ class Experiment(object):
             (left, _, _), (time, _, _) = self.mouse.getPressed(getTime=True)
             if left:
                 pos = self.mouse.getPos()
+                print('got a mouse click at: %s' % pos)
                 for grid_pos, gabor in gabors.items():
                     if gabor.contains(pos):
+                        print('mouse click was inside a gabor')
                         return grid_pos, gabor.pos, time
 
             keys = event.getKeys(keyList=['q'])
