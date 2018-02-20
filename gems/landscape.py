@@ -126,6 +126,7 @@ min_sf, max_sf = 0.05, 0.2
 
 
 class SimpleHill(Landscape):
+    """A landscape with a peak in the middle of both stimulus dimensions."""
     min_ori, max_ori = min_ori, max_ori
     min_sf, max_sf = min_sf, max_sf
 
@@ -147,23 +148,26 @@ class SimpleHill(Landscape):
         return score
 
 
-class SimpleHillA(SimpleHill):
-    pass
-
-class SimpleHillB(SimpleHill):
+class ReverseOrientation(SimpleHill):
+    """A SimpleHill landscape with orientations reversed."""
     min_ori, max_ori = max_ori, min_ori
     min_sf, max_sf = min_sf, max_sf
 
-class SimpleHillC(SimpleHill):
+
+class ReverseSpatialFrequency(SimpleHill):
+    """A SimpleHill landscape with spatial frequencies reversed."""
     min_ori, max_ori = min_ori, max_ori
     min_sf, max_sf = max_sf, min_sf
 
-class SimpleHillD(SimpleHill):
+
+class ReverseBoth(SimpleHill):
+    """A SimpleHill landscape with both stimulus dimensions reversed."""
     min_ori, max_ori = max_ori, min_ori
     min_sf, max_sf = max_sf, min_sf
 
 
 class OrientationBias(SimpleHill):
+    """A biased landscape where only orientation matters."""
     def get_score(self, grid_pos):
         score = orientation_bias(grid_pos, normalize=self.normalize)
         if self.jitter:
@@ -172,6 +176,7 @@ class OrientationBias(SimpleHill):
 
 
 class SpatialFrequencyBias(SimpleHill):
+    """"A biased landscape where only spatial frequency matters."""
     def get_score(self, grid_pos):
         score = spatial_frequency_bias(grid_pos, normalize=self.normalize)
         if self.jitter:

@@ -1,3 +1,5 @@
+import sys
+
 from os import path, mkdir
 from itertools import product
 from invoke import task
@@ -110,7 +112,7 @@ def radius(ctx, grid_pos='10-10', search_radius=8):
 
 def get_landscapes_from_name(name):
     if name == 'all':
-        names = ['SimpleHill', 'SimpleHillA', 'SimpleHillB', 'SimpleHillC', 'SimpleHillD', 'OrientationBias', 'SpatialFrequencyBias']
+        names = ['SimpleHill', 'OrientationBias', 'SpatialFrequencyBias', 'ReverseOrientation', 'ReverseSpatialFrequency', 'ReverseBoth']
     else:
         names = [name, ]
 

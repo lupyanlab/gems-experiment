@@ -19,7 +19,7 @@ class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
 
-    # Wait times ----
+    # Wait times in seconds ----
     duration_fix = 0.5
     duration_feedback = 1.5
     duration_iti = 1.0
@@ -41,6 +41,7 @@ class Experiment(object):
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
+    grating_stim_kwargs = dict(size=gabor_size)
 
     @classmethod
     def from_gui(cls, gui_yaml):
@@ -59,24 +60,22 @@ class Experiment(object):
         self.stim_positions = \
             create_radial_positions(self.n_search_items, radius=self.stim_radius)
 
-        self.grating_stim_kwargs = dict(
-            win=self.win,
-            size=self.gabor_size)
-
         self.trial_header = self.make_text('',
-            pos=(0, self.win.size[1]/2-10),
+            draw=False,
+            pos=(0, stim_radius*1.5),
             alignVert='top',
             height=30,
             bold=True)
 
         self.score_text = self.make_text('',
-            pos=(-self.win.size[0]/2+10, self.win.size[1]/2-10),
+            draw=False,
+            pos=(-stim_radius*1.5, stim_radius*1.5),
             alignVert='top',
             alignHoriz='left',
             height=30,
             bold=True)
 
-        self.fixation = self.make_text('+', height=30, pos=(0,0))
+        self.fixation = self.make_text('+', draw=False, height=30, pos=(0,0))
 
         # Object cache
         self._cache = {}
@@ -90,21 +89,67 @@ class Experiment(object):
         self.show_end()
         self.quit()
 
-    def run_training_trials(self, n_training_trials=10):
+    def show_welcome(self):
+        instructions_text = self.get_text('instructions').format(
+            response_text=self.response_text)
+
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+
+        self.make_title(self.get_text('welcome'))
+        self.make_text(instructions_text)
+        self.make_explorer()
+        left_gabor.draw()
+        right_gabor.draw()
+        self.win.flip()
+        event.waitKeys(keyList=self.response_keys)
+
+    def show_training(self):
         instructions_condition = self.get_var('instructions_condition')
-        self.landscape = dict(
+        training_instructions = self.get_text('training_instructions')[instructions_condition]
+        instructions_text = self.get_text('training').format(
+            training_instructions=training_instructions)
+
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+
+        self.make_title(self.get_text('training_title'))
+        self.make_text(instructions_text)
+        left_gabor.draw()
+        right_gabor.draw()
+        self.win.flip()
+
+        self.mouse.clickReset()
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                pos = self.mouse.getPos()
+                if right_gabor.contains(pos):
+                    break
+
+            core.wait(0.05)
+
+    def run_training_trials(self, n_training_trials=10):
+        training_landscapes = dict(
             orientation=OrientationBias(),
             spatial_frequency=SpatialFrequencyBias(),
-        )[instructions_condition]
+        )
+        instructions_condition = self.get_var('instructions_condition')
 
+        self.landscape = training_landscapes[instructions_condition]
         self.pos = (0, 0)
-        self.score = 0
+        self.total_score = 0
 
         block_data = dict(
-            landscape_ix=1,
+            landscape_ix=0,
             landscape_name=self.landscape.__name__,
             starting_pos=pos_to_str(self.pos),
-            feedback='all',
         )
 
         for trial in range(n_training_trials):
@@ -113,29 +158,33 @@ class Experiment(object):
             trial_data['trial'] = trial
             self.write_trial(trial_data)
 
-    def run_test_trials(self, n_test_trials=10):
+    def show_test(self):
+        self.make_title(self.texts['test_title'])
+        self.make_text(self.texts['test'])
+        self.make_explorer()
+        self.win.flip()
+        event.waitKeys(['space'])
 
-        # The order of these landscapes is instruction-dependent
-        landscapes = {
-            0: SimpleHillA(),
-            1: SimpleHillB(),
-            2: SimpleHillC(),
-            3: SimpleHillD(),
-        }
+    def run_test_trials(self, n_test_trials=10):
+        condition = self.get_var('instruction_condition')
+        ordered_landscapes = dict(
+            orientation=[SimpleHill(), ReverseSpatialFrequency(), ReverseOrientation(), ReverseBoth()],
+            spatial_frequency=[SimpleHill(), ReverseOrientation(), ReverseSpatialFrequency(), ReverseBoth()],
+        )
+        landscapes = ordered_landscapes[condition]
 
         for landscape_ix, start_pos in enumerate(self.starting_positions):
-            if quarry_ix > 0:
+            if landscape_ix > 0:
                 self.show_break()
 
-            self.landscape = landscapes[quarry_ix]
+            self.landscape = landscapes[landscape_ix]
             self.pos = start_pos
-            self.score = 0
+            self.total_score = 0
 
             block_data = dict(
-                landscape_ix=landscape_ix,
+                landscape_ix=landscape_ix+1,
                 landscape_name=self.landscape.__name__,
                 starting_pos=pos_to_str(self.pos),
-                feedback='selected',
             )
 
             for trial in range(n_test_trials):
@@ -144,10 +193,17 @@ class Experiment(object):
                 trial_data['trial'] = trial
                 self.write_trial(trial_data)
 
+    def show_end(self):
+        end_title = self.make_title(self.texts['end_title'])
+        end = self.make_text(self.texts['end'])
+        self.make_explorer()
+        self.win.flip()
+        event.waitKeys(keyList=self.response_keys)
+
     def run_trial(self, feedback='training'):
         gabors = self.landscape.sample_gabors(
             self.pos,
-            self.search_radius,
+            self.sight_radius,
             self.n_search_items
         )
 
@@ -159,6 +215,7 @@ class Experiment(object):
             instructions=self.get_var('instructions_condition'),
             sight_radius=self.sight_radius,
             n_search_items=self.n_search_items,
+            feedback=feedback,
             pos=pos_to_str(self.pos),
             stims=pos_list_to_str(gabors.keys()),
         )
@@ -176,62 +233,66 @@ class Experiment(object):
         self.trial_header.draw()
         self.draw_score()
         self.fixation.draw()
-        for pos, grid_pos in zip(self.stim_positions, gabors.keys()):
+        for gabor_pos, grid_pos in zip(self.stim_positions, gabors.keys()):
             gabor = gabors[grid_pos]
-            gabor.pos = pos
+            gabor.pos = gabor_pos
             gabor.draw()
         self.win.flip()
 
+        # Get trial response
         grid_pos, gabor_pos, time = self.get_clicked_gabor(gabors)
 
-        score = self.landscape.get_score(grid_pos)
-        self.pos = grid_pos      # update current pos
-        prev_score = self.score
-        self.score += score      # update current score
+        # Compare selected gem to prev trial gem
+        prev_gem_score = self.landscape.get_score(self.pos)
+        new_gem_score = self.landscape.get_score(grid_pos)
+        diff_from_prev_gem = new_gem_score - prev_gem_score
+
+        if feedback == 'training':
+            self.give_training_feedback(gabors, new_gem_score, grid_pos, gabor_pos)
+        elif feedback == 'selected':
+            self.give_selected_feedback(gabors, new_gem_score, grid_pos, gabor_pos)
+
+        self.pos = grid_pos               # move to new pos
+        self.total_score += new_gem_score # update total score
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = round(time, 2)
         trial_data['score'] = score
-        trial_data['total'] = self.score
+        trial_data['delta'] = diff_from_prev_gem
+        trial_data['total'] = self.total_score
 
-        # Draw gabors again
-        for gabor in gabors.values():
-            gabor.draw()
-
-        if feedback == 'training':
-            self.give_training_feedback()
-        elif feedback == 'selected':
-            self.give_selected_feedback()
-
-        self.draw_score()
         self.win.flip()
+        core.wait(self.duration_iti)
 
-        core.wait(self.iti)
         return trial_data
 
-    def give_training_feedback(self):
+    def give_training_feedback(self, gabors, selected_score, selected_grid_pos, selected_gabor_pos):
         self.mouse.clickReset()
+
         self.trial_header.text = self.get_trial_text('training_feedback')
         self.trial_header.draw()
 
-        selected_label = self.label_gabor_score(score, gabor_pos, bold=True)
-        self.draw_score(prev_score, score)
+        selected_label = self.label_gabor_score(selected_score, selected_gabor_pos, bold=True)
 
-        # Draw selected label as green unless another is higher score
-        selected_label.color = 'green'
-        for other_grid_pos, gabor in gabors.items():
-            if grid_pos == other_grid_pos:
-                # the label for this pos has already been drawn
+        for grid_pos, gabor in gabors.items():
+            gabor.draw()
+
+            if grid_pos == selected_grid_pos:
+                # Don't draw label for selected gabor
                 continue
-            other_score = self.landscape.get_score(other_grid_pos)
-            other_label = self.label_gabor_score(other_score, gabor.pos)
-            if other_score > score:
-                other_label.color = 'green'
+
+            score = self.landscape.get_score(grid_pos)
+            label = self.label_gabor_score(score, gabor.pos)
+
+            if score > selected_score:
+                label.color = 'green'
                 selected_label.color = 'red'
-            other_label.draw()
+
+            label.draw()
 
         selected_label.draw()
         self.win.flip()
+
         self.mouse.clickReset()
 
         while True:
@@ -239,12 +300,20 @@ class Experiment(object):
             if left:
                 break
 
-    def give_selected_feedback(self):
-        selected_label = self.label_gabor_score(score, gabor_pos, bold=True)
+            core.wait(0.05)
+
+        self.mouse.clickReset()
+
+    def give_selected_feedback(self, gabors, selected_score, selected_grid_pos, selected_gabor_pos):
+        for grid_pos, gabor in gabors.items():
+            gabor.draw()
+
+        selected_label = self.label_gabor_score(selected_score, selected_gabor_pos, bold=True)
         self.draw_score(prev_score, score)
         selected_label.draw()
         self.win.flip()
-        core.wait(self.feedback_duration)
+
+        core.wait(self.duration_feedback)
 
     def get_clicked_gabor(self, gabors):
         self.mouse.clickReset()
@@ -275,62 +344,6 @@ class Experiment(object):
             self.score_text.text = 'Your score:\n%s' % (self.score)
         self.score_text.draw()
 
-    def show_welcome(self):
-        self.make_title(self.texts['welcome'])
-
-        instructions_text = self.texts['instructions'].format(
-            response_text=self.response_text)
-        self.make_text(instructions_text)
-
-        self.make_explorer()
-
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
-        left_gabor.draw()
-
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
-        right_gabor.draw()
-
-        self.win.flip()
-        event.waitKeys(keyList=['space'])
-
-    def show_training(self):
-        self.make_title(self.texts['training_title'])
-
-        instructions_condition = self.condition_vars['instructions_condition']
-        training_instructions = self.texts['training_instructions'][instructions_condition]
-        instructions_text = self.texts['training'].format(
-            training_instructions=training_instructions)
-        self.make_text(instructions_text)
-
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
-        left_gabor.draw()
-
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
-        right_gabor.draw()
-
-        self.win.flip()
-
-        self.mouse.clickReset()
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                pos = self.mouse.getPos()
-                if right_gabor.contains(pos):
-                    break
-
-            core.wait(0.05)
-
-    def show_test(self):
-        self.make_title(self.texts['test_title'])
-        self.make_text(self.texts['test'])
-        self.make_explorer()
-        self.win.flip()
-        event.waitKeys(['space'])
-
     def show_break(self):
         title = self.make_title(self.texts['break_title'])
         text = self.make_text(self.texts['break'])
@@ -345,13 +358,6 @@ class Experiment(object):
         self.make_text(self.texts['break_complete'], pos=(0, 0))
         self.win.flip()
         event.waitKeys(['space'])
-
-    def show_end(self):
-        end_title = self.make_title(self.texts['end_title'])
-        end = self.make_text(self.texts['end'])
-        self.make_explorer()
-        self.win.flip()
-        event.waitKeys(keyList=self.response_keys)
 
     def make_text(self, text, draw=True, **kwargs):
         kw = self.text_kwargs.copy()
@@ -402,7 +408,6 @@ class Experiment(object):
         core.quit()
         self.output_file.close()
 
-
     def get_var(self, key):
         return self.condition_vars.get(key, '')
 
@@ -428,6 +433,7 @@ class Experiment(object):
 
         # Update defaults with window-specific settings
         self.text_kwargs['wrapWidth'] = win.size[0] * 0.6
+        self.grating_stim_kwargs['win'] = win
 
         self._cache['win'] = win
         return self._cache['win']
