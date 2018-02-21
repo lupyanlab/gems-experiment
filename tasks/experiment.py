@@ -8,13 +8,17 @@ def show_texts(ctx, instructions_condition='orientation'):
     """Show the instructions for the experiment."""
     Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(instructions_condition=instructions_condition)
-    experiment.use_landscape('SimpleHill')
-    experiment.show_welcome()
-    experiment.show_training()
-    experiment.show_test()
-    experiment.show_break()
-    experiment.show_end()
-    experiment.quit()
+    # experiment.use_landscape('SimpleHill')
+    # experiment.show_welcome()
+    # experiment.show_training()
+    # experiment.show_test()
+    # experiment.show_break()
+    experiment.show_summary_first_trial(10)
+    experiment.show_summary_improve(10, 5)
+    experiment.show_summary_decrease(10, 5)
+    experiment.show_summary_same(10)
+    # experiment.show_end()
+    # experiment.quit()
 
 
 @task

@@ -1,12 +1,10 @@
 from os import path
 
-from .data import output_filepath_from_subj_info
+from .data import make_output_filepath
 from .util import parse_pos_list
 
-def check_output_filepath_exists(subj_info):
-    return path.exists(output_filepath_from_subj_info(subj_info))
 
-def verify_subj_info_strings(subj_info):
+def verify_condition_vars(subj_info):
     try:
         parse_pos_list(subj_info['start_pos_list'])
     except Exception as err:
@@ -15,8 +13,8 @@ def verify_subj_info_strings(subj_info):
 
     return False
 
-def parse_subj_info_strings(subj_info):
+def convert_condition_vars(subj_info):
     new_subj_info = subj_info.copy()
     new_subj_info['starting_positions'] = parse_pos_list(subj_info['start_pos_list'])
-    new_subj_info['filename'] = output_filepath_from_subj_info(subj_info)
+    new_subj_info['filename'] = make_output_filepath(subj_info)
     return new_subj_info

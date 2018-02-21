@@ -41,3 +41,11 @@ trial:
   instructions: Click on the gem you think is most valuable.
   training_feedback: Compare the value of the gem you selected to the values of other gems.
   training_continue: Click on the most valuable gem to continue.
+  test: Here is the value of the gem you selected.
+  summary: |
+    You added {new_score} bitrocks to your total.
+    Your total score is now {total_score}.
+  summary_first_trial: Try to get the highest score you can at this quarry.
+  summary_improve: This gem was worth {diff_from_prev_gem} more than your last one.
+  summary_decrease: This gem was worth {diff_from_prev_gem} less than your last one.
+  summary_same: This gem was worth the same price as your last one.

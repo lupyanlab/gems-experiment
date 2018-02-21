@@ -1,9 +1,9 @@
 from os import path, mkdir
 
-PKG_ROOT = path.dirname(path.abspath(__file__))
-EXP_ROOT = path.dirname(PKG_ROOT)
+pkg_root = path.dirname(path.abspath(__file__))
+EXP_ROOT = path.dirname(pkg_root)
 DATA_DIR = path.join(EXP_ROOT, 'data')
-LANDSCAPE_FILES = path.join(PKG_ROOT, 'landscapes')
+LANDSCAPE_FILES = path.join(pkg_root, 'landscapes')
 
 if not path.isdir(DATA_DIR):
     mkdir(DATA_DIR)
