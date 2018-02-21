@@ -382,12 +382,12 @@ class Experiment(object):
 
     def give_training_feedback(self, gabors, selected_grid_pos):
         self.trial_header.text = self.get_trial_text('training_feedback')
-        self.trial_footer.text = self.get_trial_text('training_continue')
 
         selected_gabor = gabors[selected_grid_pos]
         highlight = self.highlight_selected(selected_gabor.pos, lineColor='green')
 
         most_valuable_grid_pos = selected_grid_pos
+        most_valuable_grid_pos_list = []
         most_valuable_score = self.landscape.score(selected_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)
 
@@ -407,13 +407,15 @@ class Experiment(object):
             if score > most_valuable_score:
                 # Update the most valuable gabor
                 most_valuable_grid_pos = grid_pos
+                most_valuable_grid_pos_list = [grid_pos, ]
                 most_valuable_score = score
+            elif score == most_valuable_score:
+                most_valuable_grid_pos_list.append(grid_pos)
 
         self.trial_header.draw()
-        self.trial_footer.draw()
         highlight.draw()
         self.win.flip()
-        self.get_clicked_gabor(gabors, most_valuable_grid_pos)
+        self.get_clicked_gabor(gabors, most_valuable_grid_pos_list)
 
     def give_selected_feedback(self, gabors, selected_grid_pos):
         for gabor in gabors.values():
@@ -431,6 +433,9 @@ class Experiment(object):
     def get_clicked_gabor(self, gabors, target=None):
         if target is None:
             targets = gabors.copy()
+        elif isinstance(target, list):
+            assert all(t in gabors for t in target)
+            targets = {t: gabors[t] for t in target}
         else:
             assert target in gabors
             targets = {target: gabors[target]}

@@ -39,8 +39,7 @@ end: |
   Press the SPACEBAR to exit this screen, and open the survey.
 trial:
   instructions: Click on the gem you think is most valuable.
-  training_feedback: Compare the value of the gem you selected to the values of other gems.
-  training_continue: Click on the most valuable gem to continue.
+  training_feedback: Click on the most valuable gem to continue.
   test: Here is the value of the gem you selected.
   summary: |
     The gem you selected was worth {new_score} bitrocks.
