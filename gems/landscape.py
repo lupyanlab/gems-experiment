@@ -38,6 +38,7 @@ class Landscape(object):
         self.max_x, self.max_y = self.dims
 
         self._gems = {}
+        self._scores = {}
 
         self.prng = random.RandomState(seed)
 
@@ -56,7 +57,7 @@ class Landscape(object):
 
     def create(self, grid_pos):
         gabor = self.get_gabor(grid_pos)
-        score = self.get_score(grid_pos)
+        score = self.score(grid_pos)
         return Gem(grid_pos[0], grid_pos[1], gabor.ori, gabor.sf, score)
 
     def get_gabor(self, grid_pos):
@@ -92,11 +93,10 @@ class Landscape(object):
 
         return positions
 
-    def sample_neighborhood(self, grid_pos, radius, n_sampled=None):
+    def sample_neighborhood(self, n_sampled, grid_pos, radius):
         """Sample positions from the neighborhood."""
         positions = self.get_neighborhood(grid_pos, radius)
         self.prng.shuffle(positions)
-        n_sampled = n_sampled or len(positions)
         return positions[:n_sampled]
 
     def get_grid_of_grating_stims(self, grid_positions):
@@ -146,6 +146,12 @@ class SimpleHill(Landscape):
         if self.jitter:
             score += self.jitters[grid_pos]
         return score
+
+    def score(self, grid_pos):
+        """A cached version of get_score."""
+        if grid_pos not in self._scores:
+            self._scores[grid_pos] = self.get_score(grid_pos)
+        return self._scores[grid_pos]
 
 
 class ReverseOrientation(SimpleHill):

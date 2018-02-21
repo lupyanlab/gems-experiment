@@ -2,3 +2,5 @@
 *.pyc
 *cache
 *.ipynb_checkpoints
+test-*.csv
+training-*.csv

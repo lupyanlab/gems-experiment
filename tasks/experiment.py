@@ -8,15 +8,16 @@ def show_texts(ctx, instructions_condition='orientation'):
     """Show the instructions for the experiment."""
     Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(instructions_condition=instructions_condition)
-    # experiment.use_landscape('SimpleHill')
-    # experiment.show_welcome()
-    # experiment.show_training()
-    # experiment.show_test()
-    # experiment.show_break()
-    experiment.show_summary_first_trial(10)
-    experiment.show_summary_improve(10, 5)
-    experiment.show_summary_decrease(10, 5)
-    experiment.show_summary_same(10)
+    experiment.use_landscape('SimpleHill')
+    experiment.show_welcome()
+    experiment.show_training()
+    experiment.show_test()
+    experiment.show_break()
+    experiment.total_score = 10
+    experiment.show_summary_first_trial(10, (10,10))
+    experiment.show_summary_improve(10, 5, (10, 10), (15, 10))
+    experiment.show_summary_decrease(10, 5, (10, 10), (8, 4))
+    experiment.show_summary_same(10, (10, 10))
     # experiment.show_end()
     # experiment.quit()
 
@@ -40,20 +41,24 @@ def run_trial(ctx):
 
 
 @task
-def run_test_trials(ctx, n_test_trials=5):
+def run_test_trials(ctx, n_test_trials=5, instructions_condition='orientation'):
     """Run test trials."""
     Experiment.win_size = (600 * 2, 400 * 2)
-    experiment = Experiment(subj_id='pierce', instructions_condition='orientation', filename='test.csv')
+    Experiment.n_trials_per_block = n_test_trials
+    output = 'test-{}.csv'.format(instructions_condition)
+    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output, starting_positions=[(0,0), ])
     experiment.use_landscape('SimpleHill')
-    experiment.run_test_trials(n_test_trials)
+    experiment.run_test_trials()
     experiment.quit()
 
 
 @task
-def run_training_trials(ctx, n_training_trials=5):
+def run_training_trials(ctx, n_training_trials=5, instructions_condition='orientation'):
     """Run training trials."""
     Experiment.win_size = (600 * 2, 400 * 2)
-    experiment = Experiment(subj_id='pierce', instructions_condition='spatial_frequency', filename='test.csv')
+    Experiment.n_training_trials = n_training_trials
+    output = 'training-{}.csv'.format(instructions_condition)
+    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output)
     experiment.use_landscape('SimpleHill')
-    experiment.run_training_trials(n_training_trials)
+    experiment.run_training_trials()
     experiment.quit()

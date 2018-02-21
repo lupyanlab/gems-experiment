@@ -38,6 +38,8 @@ class Experiment(object):
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
+    n_training_trials = 10
+    n_trials_per_block = 50
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -145,8 +147,8 @@ class Experiment(object):
 
     def run_training_trials(self):
         training_landscapes = dict(
-            orientation=OrientationBias(),
-            spatial_frequency=SpatialFrequencyBias(),
+            orientation=landscape.OrientationBias(),
+            spatial_frequency=landscape.SpatialFrequencyBias(),
         )
         instructions_condition = self.get_var('instructions_condition')
 
@@ -173,18 +175,20 @@ class Experiment(object):
         event.waitKeys(['space'])
 
     def run_test_trials(self):
-        condition = self.get_var('instruction_condition')
+        condition = self.get_var('instructions_condition')
+
         ordered_landscapes = dict(
-            orientation=[SimpleHill(), ReverseSpatialFrequency(), ReverseOrientation(), ReverseBoth()],
-            spatial_frequency=[SimpleHill(), ReverseOrientation(), ReverseSpatialFrequency(), ReverseBoth()],
+            orientation=['SimpleHill', 'ReverseSpatialFrequency', 'ReverseOrientation', 'ReverseBoth'],
+            spatial_frequency=['SimpleHill', 'ReverseOrientation', 'ReverseSpatialFrequency', 'ReverseBoth'],
         )
         landscapes = ordered_landscapes[condition]
 
-        for landscape_ix, start_pos in enumerate(self.starting_positions):
+        for landscape_ix, start_pos in enumerate(self.get_var('starting_positions')):
             if landscape_ix > 0:
                 self.show_break()
 
-            self.landscape = landscapes[landscape_ix]
+            # 'SimpleHill' -> landscape.SimpleHill()
+            self.landscape = getattr(landscape, landscapes[landscape_ix])()
             self.pos = start_pos
             self.total_score = 0
 
@@ -194,8 +198,8 @@ class Experiment(object):
                 starting_pos=pos_to_str(self.pos),
             )
 
-            for trial in range(self.n_test_trials):
-                trial_data = self.run_trial(trial=trial, feedback='selected')
+            for trial in range(self.n_trials_per_block):
+                trial_data = self.run_trial(trial=trial, feedback='summary')
                 trial_data.update(block_data)
                 self.write_trial(trial_data)
 
@@ -250,22 +254,22 @@ class Experiment(object):
             gabor.draw()
         self.win.flip()
 
-        gabor, grid_pos, time = self.get_clicked_gabor(gabors)
-
-        if feedback == 'training':
-            self.give_training_feedback(gabors, gabor, grid_pos)
-        elif feedback == 'selected':
-            self.give_selected_feedback(gabors, gabor, grid_pos)
+        grid_pos, time = self.get_clicked_gabor(gabors)
 
         # Compare selected gem to prev trial gem
-        prev_gem_score = self.landscape.get_score(self.pos)
-        new_gem_score = self.landscape.get_score(grid_pos)
+        prev_gem_score = self.landscape.score(self.pos)
+        new_gem_score = self.landscape.score(grid_pos)
         diff_from_prev_gem = new_gem_score - prev_gem_score
 
         prev_grid_pos = self.pos
         self.pos = grid_pos               # move to new pos
         self.total_score += new_gem_score # update total score
-        self.show_trial_summary(trial, new_gem_score, diff_from_prev_gem, prev_grid_pos, grid_pos)
+
+        if feedback == 'training':
+            self.give_training_feedback(gabors, grid_pos)
+        elif feedback == 'summary':
+            self.give_selected_feedback(gabors, grid_pos)
+            self.show_trial_summary(trial, new_gem_score, diff_from_prev_gem, prev_grid_pos, grid_pos)
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = round(time, 2)
@@ -279,90 +283,118 @@ class Experiment(object):
         return trial_data
 
     def show_trial_summary(self, trial, new_score, diff_from_prev_gem, prev_grid_pos, new_grid_pos):
-        selected_gabor = self.landscape.get_grating_stim(new_grid_pos)
         if trial == 0:
-            self.show_summary_first_trial(new_score, selected_gabor)
+            self.show_summary_first_trial(new_score, new_grid_pos)
         else:
-            prev_gabor = self.landscape.get_grating_stim(prev_grid_pos)
             if diff_from_prev_gem > 0:
-                self.show_summary_improve(new_score, diff_from_prev_gem, selected_gabor, prev_gabor)
+                self.show_summary_improve(new_score, diff_from_prev_gem, new_grid_pos, prev_grid_pos)
             elif diff_from_prev_gem < 0:
-                self.show_summary_decrease(new_score, abs(diff_from_prev_gem), selected_gabor, prev_gabor)
+                self.show_summary_decrease(new_score, abs(diff_from_prev_gem), new_grid_pos, prev_grid_pos)
             else: # diff_from_prev_gem == 0
-                self.show_summary_same(new_score, selected_gabor)
-
-    def make_summary(self, new_score):
-        self.make_title(self.get_trial_text('summary').format(new_score=new_score, total_score=self.total_score))
+                self.show_summary_same(new_score, new_grid_pos)
 
     def show_summary_first_trial(self, new_score, selected_grid_pos):
         self.make_summary(new_score)
-        self.make_text(self.get_trial_text('summary_first_trial'))
+        self.make_text(self.get_trial_text('summary_first_trial'), pos=(0, 50))
+
         gabor = self.landscape.get_grating_stim(selected_grid_pos)
-        gabor.pos = (0, -50)
+        gabor.pos = (0, 100)
         gabor.draw()
+
+        highlight = self.highlight_selected(gabor.pos, lineColor='green')
+        highlight.draw()
+
         self.win.flip()
         self.get_click(after=1.0)
-
-    def get_click(self, after=0):
-        core.wait(after)
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                break
 
     def show_summary_improve(self, new_score, diff_from_prev_gem, prev_grid_pos, new_grid_pos):
         self.make_summary(new_score)
         summary = self.get_trial_text('summary_improve').format(
             diff_from_prev_gem=diff_from_prev_gem
         )
-        self.make_text(summary, color='green')
-        self.make_total()
+        self.make_text(summary, color='green', pos=(0, 0))
 
         prev_gabor = self.landscape.get_grating_stim(prev_grid_pos)
-        new_gabor = self.landscape.get_grating_stim(new_grid_pos)
-        prev_gem.pos = (-100, -100)
-        new_gabor.pos = (100, -100)
-
+        prev_gabor.pos = (-100, 100)
         prev_gabor.draw()
+
+        new_gabor = self.landscape.get_grating_stim(new_grid_pos)
+        new_gabor.pos = (100, 100)
         new_gabor.draw()
 
-        self.win.flip()
-        self.get_click(after=1.0)
+        highlight = self.highlight_selected(new_gabor.pos, lineColor='green')
+        highlight.draw()
 
-    def show_summary_decrease(self, new_score, diff_from_prev_gem):
+        self.win.flip()
+        self.get_click()
+
+    def show_summary_decrease(self, new_score, diff_from_prev_gem, prev_grid_pos, new_grid_pos):
         self.make_summary(new_score)
         summary = self.get_trial_text('summary_decrease').format(
             diff_from_prev_gem=diff_from_prev_gem
         )
-        self.make_text(summary, color='red')
-        self.make_total()
-        self.win.flip()
-        self.get_click(after=1.0)
+        self.make_text(summary, color='red', pos=(0, 0))
 
-    def show_summary_same(self, new_score):
+        prev_gabor = self.landscape.get_grating_stim(prev_grid_pos)
+        prev_gabor.pos = (-100, 100)
+        prev_gabor.draw()
+
+        new_gabor = self.landscape.get_grating_stim(new_grid_pos)
+        new_gabor.pos = (100, 100)
+        new_gabor.draw()
+
+        highlight = self.highlight_selected(new_gabor.pos, lineColor='red')
+        highlight.draw()
+
+        self.win.flip()
+        self.get_click()
+
+    def show_summary_same(self, new_score, new_grid_pos):
         self.make_summary(new_score)
         summary = self.get_trial_text('summary_same').format(
             new_score=new_score,
             total=self.total_score
         )
-        self.make_text(summary)
-        self.make_total()
-        self.win.flip()
-        self.get_click(after=1.0)
+        self.make_text(summary, pos=(0, 0))
 
-    def give_training_feedback(self, gabors, selected_gabor, selected_grid_pos):
+        new_gabor = self.landscape.get_grating_stim(new_grid_pos)
+        new_gabor.pos = (0, 100)
+        new_gabor.draw()
+
+        highlight = self.highlight_selected(new_gabor.pos, lineColor='green')
+        highlight.draw()
+
+        self.win.flip()
+        self.get_click()
+
+    def make_summary(self, new_score):
+        self.make_title(self.get_trial_text('summary').format(new_score=new_score, total_score=self.total_score))
+        self.make_text('Click anywhere to continue.', pos=(0, -50))
+
+    def get_click(self, after=0.5):
+        core.wait(after)
+        self.mouse.clickReset()
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                break
+            core.wait(0.01)
+
+    def give_training_feedback(self, gabors, selected_grid_pos):
         self.trial_header.text = self.get_trial_text('training_feedback')
         self.trial_footer.text = self.get_trial_text('training_continue')
-        highlight = self.highlight_selected(selected_gabor, lineColor='green')
+
+        selected_gabor = gabors[selected_grid_pos]
+        highlight = self.highlight_selected(selected_gabor.pos, lineColor='green')
 
         most_valuable_grid_pos = selected_grid_pos
-        most_valuable_score = self.landscape.get_score(selected_grid_pos)
-        selected_score = self.landscape.get_score(selected_grid_pos)
+        most_valuable_score = self.landscape.score(selected_grid_pos)
+        selected_score = self.landscape.score(selected_grid_pos)
 
         for grid_pos, gabor in gabors.items():
             gabor.draw()
 
-            score = self.landscape.get_score(grid_pos)
+            score = self.landscape.score(grid_pos)
             label = self.label_gabor_score(score, gabor.pos)
             label.draw()
 
@@ -372,9 +404,10 @@ class Experiment(object):
                 # The most valuable gabor was not selected
                 highlight.lineColor = 'red'
 
-            if score > most_valuable_gabor_score:
+            if score > most_valuable_score:
                 # Update the most valuable gabor
                 most_valuable_grid_pos = grid_pos
+                most_valuable_score = score
 
         self.trial_header.draw()
         self.trial_footer.draw()
@@ -382,14 +415,14 @@ class Experiment(object):
         self.win.flip()
         self.get_clicked_gabor(gabors, most_valuable_grid_pos)
 
-    def give_selected_feedback(self, gabors, selected_gabor, selected_grid_pos):
-        self.trial_header.text = self.get_trial_text('test')
-        self.trial_header.draw()
-
+    def give_selected_feedback(self, gabors, selected_grid_pos):
         for gabor in gabors.values():
             gabor.draw()
 
-        selected_score = self.landscape.get_score(selected_grid_pos)
+        selected_gabor = gabors[selected_grid_pos]
+        highlight = self.highlight_selected(selected_gabor.pos, lineColor='green')
+        highlight.draw()
+        selected_score = self.landscape.score(selected_grid_pos)
         selected_label = self.label_gabor_score(selected_score, selected_gabor.pos)
         selected_label.draw()
         self.win.flip()
@@ -397,10 +430,10 @@ class Experiment(object):
 
     def get_clicked_gabor(self, gabors, target=None):
         if target is None:
-            targets = gabors.keys()
+            targets = gabors.copy()
         else:
             assert target in gabors
-            targets = [target, ]
+            targets = {target: gabors[target]}
 
         self.mouse.clickReset()
         waiting_for_response = True
@@ -414,7 +447,7 @@ class Experiment(object):
                         waiting_for_response = False
                         break
 
-        return grid_pos, gabor.pos, time
+        return grid_pos, time
 
     def label_gabor_score(self, score, gabor_pos, **kwargs):
         feedback_pos = (gabor_pos[0], gabor_pos[1]+self.gabor_size/2+10)
@@ -443,7 +476,7 @@ class Experiment(object):
         title.draw()
         text.draw()
         explorer.draw()
-        self.make_text(self.texts['break_complete'], pos=(0, -10))
+        self.make_text(self.texts['break_complete'], pos=(0, -50))
         self.win.flip()
         event.waitKeys(['space'])
 

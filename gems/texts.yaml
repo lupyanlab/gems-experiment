@@ -26,10 +26,10 @@ test: |
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: You are finished at this quarry. On to the next one!
 break: |
-  You've finished collecting gems at this quarry. Take a short break while your ship flies to the next quarry.
+  You've finished collecting gems at this quarry. Please wait while your ship flies to the next quarry. Take this opportunity to relax your eyes and stretch.
 
   When you get to the new quarry, you will likely encounter new gems you haven't seen before. Try to figure out which gems at this quarry are the most valuable.
-break_complete: When you are ready to continue, press the SPACEBAR.
+break_complete: Are you ready to continue? If so, press the SPACEBAR.
 end_title: |
   Your ship is full of gems and you are ready to fly home.
   Thanks for visiting Planet Teeb!
@@ -43,9 +43,8 @@ trial:
   training_continue: Click on the most valuable gem to continue.
   test: Here is the value of the gem you selected.
   summary: |
-    You added {new_score} bitrocks to your total.
-    Your total score is now {total_score}.
-  summary_first_trial: Try to get the highest score you can at this quarry.
+    The gem you selected was worth {new_score} bitrocks.
+    Your total score is now {total_score} bitrocks.
   summary_improve: This gem was worth {diff_from_prev_gem} more than your last one.
   summary_decrease: This gem was worth {diff_from_prev_gem} less than your last one.
   summary_same: This gem was worth the same price as your last one.
