@@ -50,7 +50,6 @@ class Landscape(object):
     def spatial_frequencies(self):
         return linspace(self.min_sf, self.max_sf, num=self.n_rows)
 
-
     def get(self, grid_pos):
         """Get the Gem at this position, creating it if necessary."""
         return self._gems.setdefault(grid_pos, self.create(grid_pos))
