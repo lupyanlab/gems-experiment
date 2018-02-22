@@ -17,14 +17,16 @@ training: |
 training_instructions:
   orientation: |
     Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem on the right is the more valuable gem.
-  frequency: |
+  spatial_frequency: |
     Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem on the right is the more valuable gem.
 test_title: Your training is complete!
 test: |
   Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial.
 
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
-break_title: You are finished at this quarry. On to the next one!
+break_title: |
+  You are finished at this quarry.
+  On to the next one!
 break: |
   You've finished collecting gems at this quarry. Please wait while your ship flies to the next quarry. Take this opportunity to relax your eyes and stretch.
 

@@ -4,7 +4,7 @@ from .config import DATA_DIR
 data_columns = [
     'subj_id', 'date', 'computer', 'experimenter',
     'instructions', 'sight_radius', 'n_gabors',
-    'landscape_ix', 'landscape_name', 'starting_pos', 'trial',
+    'landscape_ix', 'landscape_name', 'starting_pos', 'starting_score', 'trial',
     'feedback', 'pos', 'stims',
     'selected', 'rt', 'score', 'delta', 'total',
 ]

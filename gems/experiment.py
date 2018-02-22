@@ -38,8 +38,8 @@ class Experiment(object):
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
-    n_training_trials = 10
-    n_trials_per_block = 20
+    n_training_trials = 25
+    n_trials_per_block = 50
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -97,6 +97,8 @@ class Experiment(object):
 
         self.mouse = event.Mouse()
 
+        self.use_landscape('SimpleHill')
+
     def run(self):
         self.show_welcome()
         self.show_training()
@@ -152,6 +154,21 @@ class Experiment(object):
 
             core.wait(0.05)
 
+        self.make_title('Are you ready to begin?')
+        self.make_text('You will now collect {} gems from the Training Quarry. Click anywhere to begin.'.format(self.n_training_trials))
+
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if not left:
+                break
+
+        self.win.flip()
+        self.mouse.clickReset()
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                break
+
     def run_training_trials(self):
         training_landscapes = dict(
             orientation=landscape.OrientationBias(),
@@ -167,6 +184,7 @@ class Experiment(object):
             landscape_ix=0,
             landscape_name=self.landscape.__class__.__name__,
             starting_pos=pos_to_str(self.pos),
+            starting_score=self.total_score
         )
 
         for trial in range(self.n_training_trials):
@@ -180,6 +198,22 @@ class Experiment(object):
         self.make_explorer()
         self.win.flip()
         event.waitKeys(['space'])
+
+        self.make_title('Are you ready to begin?')
+        num_quarries = 4
+        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Click anywhere to begin.'.format(num_quarries, self.n_test_trials))
+
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if not left:
+                break
+
+        self.win.flip()
+        self.mouse.clickReset()
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                break
 
     def run_test_trials(self):
         condition = self.get_var('instructions_condition')
@@ -203,6 +237,7 @@ class Experiment(object):
                 landscape_ix=landscape_ix+1,
                 landscape_name=self.landscape.__class__.__name__,
                 starting_pos=pos_to_str(self.pos),
+                starting_score=self.total_score
             )
 
             for trial in range(self.n_trials_per_block):
@@ -289,7 +324,6 @@ class Experiment(object):
         trial_data['rt'] = round(time, 2)
         trial_data['score'] = new_gem_score
         trial_data['delta'] = diff_from_prev_gem
-        trial_data['total'] = self.total_score
 
         self.landscape_title.draw()
         self.draw_score()
@@ -446,7 +480,7 @@ class Experiment(object):
         return text
 
     def make_title(self, text, draw=True, **kwargs):
-        kw = dict(bold=True, height=30, pos=(0, 250))
+        kw = dict(bold=True, height=30, pos=(0, 270), wrapWidth=self.win.size[0])
         kw.update(kwargs)
         text = self.make_text(text, **kw)
         if draw:
@@ -510,7 +544,7 @@ class Experiment(object):
                             color=self.win_color)
 
         # Update defaults with window-specific settings
-        self.text_kwargs['wrapWidth'] = win.size[0] * 0.6
+        self.text_kwargs['wrapWidth'] = win.size[0] * 0.5
         self.grating_stim_kwargs['win'] = win
 
         self._cache['win'] = win
