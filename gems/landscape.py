@@ -136,8 +136,8 @@ class Landscape(object):
         return self._scores[grid_pos]
 
 
-min_ori, max_ori = 30, 190
-min_sf, max_sf = 0.04, 0.15
+min_ori, max_ori = 40, 180
+min_sf, max_sf = 0.04, 0.18
 
 
 class SimpleHill(Landscape):
