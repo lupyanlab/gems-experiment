@@ -3,7 +3,7 @@ from math import sqrt
 from collections import namedtuple, OrderedDict
 from psychopy import visual
 from itertools import product
-from numpy import linspace, random
+from numpy import linspace, random, log, geomspace
 from pandas import DataFrame, read_csv
 
 from .util import create_grid
@@ -49,7 +49,7 @@ class Landscape(object):
 
     @property
     def spatial_frequencies(self):
-        return linspace(self.min_sf, self.max_sf, num=self.n_rows)
+        return geomspace(self.min_sf, self.max_sf, num=self.n_rows)
 
     def get(self, grid_pos):
         """Get the Gem at this position, creating it if necessary."""
@@ -136,8 +136,8 @@ class Landscape(object):
         return self._scores[grid_pos]
 
 
-min_ori, max_ori = 20, 200
-min_sf, max_sf = 0.05, 0.2
+min_ori, max_ori = 30, 190
+min_sf, max_sf = 0.04, 0.15
 
 
 class SimpleHill(Landscape):
