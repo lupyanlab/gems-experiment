@@ -30,7 +30,7 @@ class Experiment(object):
     win_color = (.6, .6, .6)
 
     # Stimulus presentation ----
-    gabor_size = 60     # in pix
+    gabor_size = 80     # in pix
     n_gabors = 6        # gabors per trial
     stim_radius = 200   # pix between fix and center of grating stim
 
@@ -201,7 +201,7 @@ class Experiment(object):
 
         self.make_title('Are you ready to begin?')
         num_quarries = 4
-        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Click anywhere to begin.'.format(num_quarries, self.n_test_trials))
+        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Click anywhere to begin.'.format(num_quarries, self.n_trials_per_block))
 
         while True:
             (left, _, _) = self.mouse.getPressed()
