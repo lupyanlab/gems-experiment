@@ -1,4 +1,4 @@
-from gems import Landscape, SimpleHill, StaticLandscape
+from gems import Landscape, SimpleHill
 
 
 def test_convert_landscape_to_tidy_data():
@@ -26,11 +26,3 @@ def test_get_neighbors_ignorse_those_off_map():
     neighbors = landscape.get_neighborhood((0, 0), radius=1)
     assert len(neighbors) == 4
     assert set(neighbors) == set([(0,0), (0,1), (1,1), (1,0)])
-
-def test_read_landscape_from_file():
-    landscape = StaticLandscape('tests/test_landscapes/simple_landscape.csv')
-    assert landscape.score((0, 0)) == 100
-
-def test_read_landscape_from_name():
-    landscape = StaticLandscape('SimpleHill')
-    assert landscape.score((0, 0)) is not None

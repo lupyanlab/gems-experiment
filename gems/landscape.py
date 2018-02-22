@@ -119,6 +119,12 @@ class Landscape(object):
         return (x >= self.min_x and x < self.max_x and
                 y >= self.min_y and y < self.max_y)
 
+    def score(self, grid_pos):
+        """A cached version of get_score."""
+        if grid_pos not in self._scores:
+            self._scores[grid_pos] = self.get_score(grid_pos)
+        return self._scores[grid_pos]
+
 
 min_ori, max_ori = 20, 200
 min_sf, max_sf = 0.05, 0.2
@@ -145,12 +151,6 @@ class SimpleHill(Landscape):
         if self.jitter:
             score += self.jitters[grid_pos]
         return score
-
-    def score(self, grid_pos):
-        """A cached version of get_score."""
-        if grid_pos not in self._scores:
-            self._scores[grid_pos] = self.get_score(grid_pos)
-        return self._scores[grid_pos]
 
 
 class ReverseOrientation(SimpleHill):
@@ -187,17 +187,3 @@ class SpatialFrequencyBias(SimpleHill):
         if self.jitter:
             score += self.jitters[grid_pos]
         return score
-
-
-class StaticLandscape(Landscape):
-    def __init__(self, csv_file):
-        if not path.exists(csv_file):
-            csv_file = path.join(LANDSCAPE_FILES, '{}.csv'.format(csv_file))
-
-        assert path.exists(csv_file), 'landscape file {} not found'.format(csv_file)
-
-        data = read_csv(csv_file)
-        self.scores = {(row.x, row.y): row.score for row in data.itertuples()}
-
-    def get_score(self, grid_pos):
-        return self.scores[grid_pos]
