@@ -31,7 +31,7 @@ class Experiment(object):
 
     # Stimulus presentation ----
     gabor_size = 60     # in pix
-    n_gabors = 9  # gabors per trial
+    n_gabors = 5        # gabors per trial
     stim_radius = 200   # pix between fix and center of grating stim
 
     # Players ----
