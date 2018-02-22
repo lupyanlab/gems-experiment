@@ -21,7 +21,7 @@ class Experiment(object):
 
     # Wait times in seconds ----
     duration_fix = 0.5
-    duration_feedback = 1.5
+    duration_feedback = 2
     duration_iti = 1.0
     duration_break_minimum = 5
 
@@ -31,7 +31,7 @@ class Experiment(object):
 
     # Stimulus presentation ----
     gabor_size = 60     # in pix
-    n_gabors = 5        # gabors per trial
+    n_gabors = 6        # gabors per trial
     stim_radius = 200   # pix between fix and center of grating stim
 
     # Players ----
@@ -39,7 +39,7 @@ class Experiment(object):
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
     n_training_trials = 10
-    n_trials_per_block = 50
+    n_trials_per_block = 20
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -68,7 +68,7 @@ class Experiment(object):
             pos=(0, self.stim_radius*2),
             alignVert='top',
             height=30,
-            bold=True)
+            wrapWidth=self.win.size[0])
 
         self.trial_footer = self.make_text('',
             draw=False,
@@ -79,12 +79,19 @@ class Experiment(object):
 
         self.score_text = self.make_text('',
             draw=False,
-            pos=(-self.stim_radius*3, self.stim_radius*2),
+            pos=(self.stim_radius*3, self.stim_radius*1.8),
             alignVert='top',
-            alignHoriz='left',
-            color='gold',
-            height=30,
-            bold=True)
+            alignHoriz='right',
+            color='blue',
+            height=30)
+
+        self.landscape_title = self.make_text('',
+            draw=False,
+            pos=(self.stim_radius*3, self.stim_radius*2),
+            alignVert='top',
+            alignHoriz='right',
+            color='blue',
+            height=30)
 
         self.fixation = self.make_text('+', draw=False, height=30, pos=(0,0))
 
@@ -163,7 +170,7 @@ class Experiment(object):
         )
 
         for trial in range(self.n_training_trials):
-            trial_data = self.run_trial(trial=trial, feedback='training')
+            trial_data = self.run_trial(trial=trial, feedback='training', landscape_title='Training Quarry')
             trial_data.update(block_data)
             self.write_trial(trial_data)
 
@@ -199,7 +206,7 @@ class Experiment(object):
             )
 
             for trial in range(self.n_trials_per_block):
-                trial_data = self.run_trial(trial=trial, feedback='selected')
+                trial_data = self.run_trial(trial=trial, feedback='selected', landscape_title='Quarry #{}'.format(landscape_ix+1))
                 trial_data.update(block_data)
                 self.write_trial(trial_data)
 
@@ -236,14 +243,17 @@ class Experiment(object):
         trial_data.update(kwargs)
         return trial_data
 
-    def run_trial(self, trial=0, feedback='training'):
+    def run_trial(self, trial=0, feedback='training', landscape_title=''):
         gabors = self.sample_gabors()
         trial_data = self.make_trial_data(feedback=feedback,
                                           stims=pos_list_to_str(gabors.keys()),
                                           trial=trial)
 
+        self.landscape_title.text = landscape_title
+
         # Begin trial presentation ----
         self.fixation.draw()
+        self.landscape_title.draw()
         if trial > 0:
             self.draw_score()
         self.win.flip()
@@ -251,6 +261,7 @@ class Experiment(object):
 
         self.trial_header.text = self.get_trial_text('instructions')
         self.trial_header.draw()
+        self.landscape_title.draw()
         if trial > 0:
             self.draw_score()
         self.fixation.draw()
@@ -280,6 +291,8 @@ class Experiment(object):
         trial_data['delta'] = diff_from_prev_gem
         trial_data['total'] = self.total_score
 
+        self.landscape_title.draw()
+        self.draw_score()
         self.win.flip()
         core.wait(self.duration_iti)
 
@@ -287,6 +300,7 @@ class Experiment(object):
 
     def give_training_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
         self.trial_header.text = self.get_trial_text('training_feedback')
+
 
         prev_score = self.landscape.score(prev_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)
@@ -319,6 +333,7 @@ class Experiment(object):
             elif score == most_valuable_score:
                 most_valuable_grid_pos_list.append(grid_pos)
 
+        self.landscape_title.draw()
         self.trial_header.draw()
         if trial == 0:
             prev_score = None
@@ -349,6 +364,7 @@ class Experiment(object):
         if trial == 0:
             prev_score = None
         self.draw_score(prev_score)
+        self.landscape_title.draw()
         self.win.flip()
         core.wait(self.duration_feedback)
 
@@ -361,6 +377,12 @@ class Experiment(object):
         else:
             assert target in gabors
             targets = {target: gabors[target]}
+
+        # Wait to get a new mouse response until they have let go of the mouse
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if not left:
+                break
 
         self.mouse.clickReset()
         waiting_for_response = True
@@ -394,10 +416,10 @@ class Experiment(object):
 
     def draw_score(self, prev_score=None):
         if prev_score is None:
-            self.score_text.text = 'Your score:\n%s bitrocks' % (self.total_score)
+            self.score_text.text = 'Your score: %s' % (self.total_score)
         else:
             delta = self.total_score - prev_score
-            self.score_text.text = 'Previous score: %s\nNew score: %s' % (prev_score, delta, self.total_score)
+            self.score_text.text = 'Previous score: %s\n     New score: %s' % (prev_score, self.total_score)
         self.score_text.draw()
 
     def show_break(self):

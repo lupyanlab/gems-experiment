@@ -13,11 +13,6 @@ def show_texts(ctx, instructions_condition='orientation'):
     experiment.show_training()
     experiment.show_test()
     experiment.show_break()
-    experiment.total_score = 10
-    experiment.show_summary_first_trial(10, (10,10))
-    experiment.show_summary_improve(10, 5, (10, 10), (15, 10))
-    experiment.show_summary_decrease(10, 5, (10, 10), (8, 4))
-    experiment.show_summary_same(10, (10, 10))
     # experiment.show_end()
     # experiment.quit()
 

@@ -6,15 +6,6 @@ from invoke import task
 import gems
 
 
-landscapes_dir = '../data/data-raw/landscapes'
-if not path.isdir(landscapes_dir):
-    mkdir(landscapes_dir)
-
-gabors_dir = '../data/inst/extdata'
-if not path.isdir(gabors_dir):
-    mkdir(gabors_dir)
-
-
 @task
 def data(ctx, name, move_to_r_pkg=False):
     """Save the landscape to a tidy csv.
@@ -25,6 +16,11 @@ def data(ctx, name, move_to_r_pkg=False):
 
     """
     landscapes = get_landscapes_from_name(name)
+
+    if move_to_r_pkg:
+        landscapes_dir = '../data/data-raw/landscapes'
+        if not path.isdir(landscapes_dir):
+            mkdir(landscapes_dir)
 
     for name, landscape in landscapes.items():
         if move_to_r_pkg:
@@ -46,6 +42,11 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
     """
     from psychopy import visual
     from numpy import linspace
+
+    if move_to_r_pkg:        
+        gabors_dir = '../data/inst/extdata'
+        if not path.isdir(gabors_dir):
+            mkdir(gabors_dir)
 
     win = visual.Window(size=(800, 800), units='pix', color=(0.6, 0.6, 0.6))
 
