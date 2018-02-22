@@ -1,4 +1,5 @@
 from os import path
+from math import sqrt
 from collections import namedtuple, OrderedDict
 from psychopy import visual
 from itertools import product
@@ -87,7 +88,7 @@ class Landscape(object):
 
         positions = []
         for pos in product(x_positions, y_positions):
-            if self.is_position_on_grid(pos):
+            if self.is_position_on_grid(pos) and self.is_position_within_radius(grid_pos, pos, radius):
                 positions.append(pos)
 
         return positions
@@ -118,6 +119,15 @@ class Landscape(object):
         x, y = grid_pos
         return (x >= self.min_x and x < self.max_x and
                 y >= self.min_y and y < self.max_y)
+
+    def is_position_within_radius(self, start_pos, end_pos, max_radius):
+        x1, y1 = start_pos
+        x2, y2 = end_pos
+        x = abs(x1 - x2)
+        y = abs(y1 - y2)
+        radius = sqrt(x**2 + y**2)
+        return radius <= max_radius
+
 
     def score(self, grid_pos):
         """A cached version of get_score."""
