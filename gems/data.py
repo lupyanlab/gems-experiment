@@ -6,7 +6,8 @@ data_columns = [
     'instructions', 'sight_radius', 'n_gabors',
     'landscape_ix', 'landscape_name', 'starting_pos', 'starting_score', 'trial',
     'feedback', 'pos', 'stims',
-    'selected', 'rt', 'score', 'delta', 'total',
+    'selected', 'rt', 'score', 'delta',
+    'exp_time'
 ]
 
 def make_output_filepath(subj_info):
