@@ -18,6 +18,13 @@ def show_texts(ctx, instructions_condition='orientation'):
 
 
 @task
+def show_survey(ctx):
+    Experiment.win_size = (600 * 2.5, 400 * 2.5)
+    experiment = Experiment(subj_id='GEMS100', computer='LL-Kramer')
+    experiment.show_end()
+
+
+@task
 def gui(ctx):
     """Open the subject info GUI and print the results."""
     experiment = Experiment.from_gui('gui.yml')

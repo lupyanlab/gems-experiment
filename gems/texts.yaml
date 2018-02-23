@@ -48,3 +48,5 @@ trial:
   summary_improve: This gem was worth {diff_from_prev_gem} more than your last one.
   summary_decrease: This gem was worth {diff_from_prev_gem} less than your last one.
   summary_same: This gem was worth the same price as your last one.
+
+survey: https://docs.google.com/forms/d/e/1FAIpQLSfv2owurYnTqVNKKsf7QAEu5Xn0kyGJ0rHPDYzmYZbyskBmNA/viewform?usp=pp_url&entry.967939331={subj_id}&entry.1651313797={computer}

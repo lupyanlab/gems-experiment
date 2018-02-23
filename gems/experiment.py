@@ -1,4 +1,5 @@
 import subprocess
+import webbrowser
 from os import path
 
 import yaml
@@ -251,6 +252,11 @@ class Experiment(object):
         self.make_explorer()
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
+
+        prefilled_url = self.get_text('survey').format(**self.condition_vars)
+        webbrowser.open(prefilled_url)
+        with open('survey-links.txt', 'a') as f:
+            f.write(prefilled_url + '\n')
 
     def sample_gabors(self):
         """Sample gabors in a certain radius and place them on the screen.
