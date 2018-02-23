@@ -100,7 +100,7 @@ class Experiment(object):
 
         self.use_landscape('SimpleHill')
 
-        self.clock = core.Clock()
+        self.exp_timer = core.Clock()
 
     def run(self):
         self.exp_timer.reset()
@@ -314,7 +314,7 @@ class Experiment(object):
         self.win.flip()
 
         grid_pos, time = self.get_clicked_gabor(gabors)
-        trial_data['exp_time'] = self.exp_time.getTime()
+        trial_data['exp_time'] = self.exp_timer.getTime()
 
         # Compare selected gem to prev trial gem
         prev_gem_score = self.landscape.score(self.pos)
