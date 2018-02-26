@@ -116,17 +116,21 @@ class Experiment(object):
         instructions_text = self.get_text('instructions').format(
             response_text=self.response_text)
 
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
-
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
+        instructions_condition = self.get_var('instructions_condition')
+        grid_positions = dict(
+            orientation = [(10, 10), (50, 10), (90, 10)],
+            spatial_frequency = [(10, 10), (10, 50), (10, 90)],
+        )
+        selected_grid_positions = grid_positions[instructions_condition]
+        stim_positions = [(-200, -150), (0, -150), (200, -150)]
+        for grid_pos, gabor_pos in zip(selected_grid_positions, stim_positions):
+            gabor = self.landscape.get_grating_stim(grid_pos)
+            gabor.pos = gabor_pos
+            gabor.draw()
 
         self.make_title(self.get_text('welcome'))
         self.make_text(instructions_text)
         self.make_explorer()
-        left_gabor.draw()
-        right_gabor.draw()
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
 
@@ -136,16 +140,24 @@ class Experiment(object):
         instructions_text = self.get_text('training').format(
             training_instructions=training_instructions)
 
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
+        grid_positions = dict(
+            orientation = [(10, 10), (50, 10), (90, 10)],
+            spatial_frequency = [(10, 10), (10, 50), (10, 90)],
+        )
+        selected_grid_positions = grid_positions[instructions_condition]
+        stim_positions = [(-200, -150), (0, -150), (200, -150)]
 
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
+        gabors = []
+        for grid_pos, gabor_pos in zip(selected_grid_positions, stim_positions):
+            gabor = self.landscape.get_grating_stim(grid_pos)
+            gabor.pos = gabor_pos
+            gabor.draw()
+
+            gabors.append(gabor)
+
 
         self.make_title(self.get_text('training_title'))
         self.make_text(instructions_text)
-        left_gabor.draw()
-        right_gabor.draw()
         self.win.flip()
 
         self.mouse.clickReset()
@@ -153,7 +165,7 @@ class Experiment(object):
             (left, _, _) = self.mouse.getPressed()
             if left:
                 pos = self.mouse.getPos()
-                if right_gabor.contains(pos):
+                if gabors[1].contains(pos):
                     break
 
             core.wait(0.05)
@@ -499,7 +511,7 @@ class Experiment(object):
 
     def make_explorer(self, draw=True):
         explorer_png = path.join(pkg_root, 'img', 'explorer.png')
-        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -200), size=200)
+        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -325), size=200)
         if draw:
             explorer.draw()
         return explorer

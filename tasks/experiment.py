@@ -13,8 +13,24 @@ def show_texts(ctx, instructions_condition='orientation'):
     experiment.show_training()
     experiment.show_test()
     experiment.show_break()
-    # experiment.show_end()
+    experiment.show_end()
     # experiment.quit()
+
+
+@task
+def show_training(ctx):
+    """Show both instruction types."""
+    Experiment.win_size = (600 * 2.5, 400 * 2.5)
+    experiment = Experiment()
+    experiment.use_landscape('SimpleHill')
+
+    experiment.condition_vars['instructions_condition'] = 'orientation'
+    experiment.show_welcome()
+    experiment.show_training()
+
+    experiment.condition_vars['instructions_condition'] = 'spatial_frequency'
+    experiment.show_welcome()
+    experiment.show_training()
 
 
 @task

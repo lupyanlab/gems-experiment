@@ -16,9 +16,9 @@ training: |
   Click on the more valuable gem to continue. If you do not know which gem is more valuable, reread the instructions above. If you do not understand the instructions above, please ask for help from the researcher.
 training_instructions:
   orientation: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem on the right is the more valuable gem.
+    Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem in the middle is the more valuable gem.
   spatial_frequency: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem on the right is the more valuable gem.
+    Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem in the middle is the more valuable gem.
 test_title: Your training is complete!
 test: |
   Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial.
