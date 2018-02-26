@@ -3,6 +3,10 @@ import sys
 from os import path, mkdir
 from itertools import product
 from invoke import task
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 import gems
 
 
@@ -43,7 +47,7 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
     from psychopy import visual
     from numpy import linspace
 
-    if move_to_r_pkg:        
+    if move_to_r_pkg:
         gabors_dir = '../data/inst/extdata'
         if not path.isdir(gabors_dir):
             mkdir(gabors_dir)
@@ -89,9 +93,6 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
 @task
 def draw(ctx, name, open_after=False):
     """Draw the landscape as a 3D plot."""
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
-
     landscapes = get_landscapes_from_name(name)
     for name, landscape in landscapes.items():
         data = landscape.to_tidy_data()
