@@ -8,7 +8,7 @@ def test_convert_landscape_to_tidy_data():
     assert tidy_data.columns.tolist() == 'x y ori sf score'.split()
 
 def test_get_score_on_simple_hill():
-    simple_hill = SimpleHill(normalize=False, jitter=False)
+    simple_hill = SimpleHill(normalize=False)
     assert simple_hill.score((50, 50)) == 5000
 
 def test_get_gabors_surrounding_grid_pos():

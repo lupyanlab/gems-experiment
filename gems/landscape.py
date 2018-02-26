@@ -145,21 +145,12 @@ class SimpleHill(Landscape):
     min_ori, max_ori = min_ori, max_ori
     min_sf, max_sf = min_sf, max_sf
 
-    def __init__(self, seed=5978, normalize=True, jitter=True, **kwargs):
+    def __init__(self, seed=5978, normalize=True, **kwargs):
         super(SimpleHill, self).__init__(**kwargs)
-
         self.normalize = normalize
-        self.jitter = jitter
-        if self.jitter:
-            self.jitters = {}
-            self.prng = random.RandomState(seed)
-            for x, y in create_grid(*self.dims):
-                self.jitters[(x, y)] = self.prng.randint(-2, 2)
 
     def get_score(self, grid_pos):
         score = simple_hill(grid_pos, normalize=self.normalize)
-        if self.jitter:
-            score += self.jitters[grid_pos]
         return score
 
 
@@ -185,8 +176,6 @@ class OrientationBias(SimpleHill):
     """A biased landscape where only orientation matters."""
     def get_score(self, grid_pos):
         score = orientation_bias(grid_pos, normalize=self.normalize)
-        if self.jitter:
-            score += self.jitters[grid_pos]
         return score
 
 
@@ -194,6 +183,4 @@ class SpatialFrequencyBias(SimpleHill):
     """"A biased landscape where only spatial frequency matters."""
     def get_score(self, grid_pos):
         score = spatial_frequency_bias(grid_pos, normalize=self.normalize)
-        if self.jitter:
-            score += self.jitters[grid_pos]
         return score
