@@ -105,7 +105,7 @@ def draw(ctx, name, open_after=False):
         ax.set_ylabel('y')
         ax.set_zlabel('score')
 
-        output = path.join(gems.config.LANDSCAPE_FILES, '{}Scores.pdf'.format(name))
+        output = path.join(gems.config.LANDSCAPE_FILES, '{}Scores.png'.format(name))
         fig.savefig(output)
 
         if open_after:
