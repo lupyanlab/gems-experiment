@@ -188,7 +188,7 @@ class Experiment(object):
         instructions_condition = self.get_var('instructions_condition')
 
         self.landscape = training_landscapes[instructions_condition]
-        self.pos = (5, 5)
+        self.pos = (0, 0)
         self.total_score = self.landscape.score(self.pos)
 
         block_data = dict(
