@@ -229,18 +229,11 @@ class Experiment(object):
     def run_test_trials(self):
         condition = self.get_var('instructions_condition')
 
-        ordered_landscapes = dict(
-            orientation=['SimpleHill', 'ReverseSpatialFrequency', 'ReverseOrientation', 'ReverseBoth'],
-            spatial_frequency=['SimpleHill', 'ReverseOrientation', 'ReverseSpatialFrequency', 'ReverseBoth'],
-        )
-        landscapes = ordered_landscapes[condition]
-
         for landscape_ix, start_pos in enumerate(self.get_var('starting_positions')):
             if landscape_ix > 0:
                 self.show_break()
 
-            # 'SimpleHill' -> landscape.SimpleHill()
-            self.landscape = getattr(landscape, landscapes[landscape_ix])()
+            self.landscape = landscapes.SimpleHill()
             self.pos = start_pos
             self.total_score = self.landscape.score(start_pos)
 
@@ -351,7 +344,6 @@ class Experiment(object):
 
     def give_training_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
         self.trial_header.text = self.get_trial_text('training_feedback')
-
 
         prev_score = self.landscape.score(prev_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)

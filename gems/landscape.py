@@ -1,4 +1,5 @@
 from os import path
+from functools import partial
 from math import sqrt
 from collections import namedtuple, OrderedDict
 from psychopy import visual
@@ -136,51 +137,26 @@ class Landscape(object):
         return self._scores[grid_pos]
 
 
-min_ori, max_ori = 40, 180
-min_sf, max_sf = 0.04, 0.18
-
-
 class SimpleHill(Landscape):
     """A landscape with a peak in the middle of both stimulus dimensions."""
-    min_ori, max_ori = min_ori, max_ori
-    min_sf, max_sf = min_sf, max_sf
+    min_ori, max_ori = 40, 180
+    min_sf, max_sf = 0.04, 0.18
 
-    def __init__(self, seed=5978, normalize=True, **kwargs):
+    def __init__(self, normalize=True, **kwargs):
         super(SimpleHill, self).__init__(**kwargs)
         self.normalize = normalize
 
     def get_score(self, grid_pos):
-        score = simple_hill(grid_pos, normalize=self.normalize)
-        return score
-
-
-class ReverseOrientation(SimpleHill):
-    """A SimpleHill landscape with orientations reversed."""
-    min_ori, max_ori = max_ori, min_ori
-    min_sf, max_sf = min_sf, max_sf
-
-
-class ReverseSpatialFrequency(SimpleHill):
-    """A SimpleHill landscape with spatial frequencies reversed."""
-    min_ori, max_ori = min_ori, max_ori
-    min_sf, max_sf = max_sf, min_sf
-
-
-class ReverseBoth(SimpleHill):
-    """A SimpleHill landscape with both stimulus dimensions reversed."""
-    min_ori, max_ori = max_ori, min_ori
-    min_sf, max_sf = max_sf, min_sf
+        return simple_hill(grid_pos, normalize=self.normalize)
 
 
 class OrientationBias(SimpleHill):
     """A biased landscape where only orientation matters."""
     def get_score(self, grid_pos):
-        score = orientation_bias(grid_pos, normalize=self.normalize)
-        return score
+        return orientation_bias(grid_pos, normalize=self.normalize)
 
 
 class SpatialFrequencyBias(SimpleHill):
     """"A biased landscape where only spatial frequency matters."""
     def get_score(self, grid_pos):
-        score = spatial_frequency_bias(grid_pos, normalize=self.normalize)
-        return score
+        return spatial_frequency_bias(grid_pos, normalize=self.normalize)
