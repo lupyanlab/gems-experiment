@@ -23,7 +23,6 @@ class Experiment(object):
     # Wait times in seconds ----
     duration_fix = 0.5
     duration_feedback = 2
-    duration_training_feedback = 4
     duration_iti = 1.0
     duration_break_minimum = 5
 
@@ -39,7 +38,7 @@ class Experiment(object):
     # Players ----
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
-    pos = (5, 5)      # initial grid position on the landscape
+    pos = (0, 0)      # initial grid position on the landscape
     n_training_trials = 20
     n_trials_per_block = 40
 
@@ -230,11 +229,12 @@ class Experiment(object):
     def run_test_trials(self):
         condition = self.get_var('instructions_condition')
 
+        self.use_landscape('SimpleHill')
+
         for landscape_ix, start_pos in enumerate(self.get_var('starting_positions')):
             if landscape_ix > 0:
                 self.show_break()
 
-            self.landscape = landscapes.SimpleHill()
             self.pos = start_pos
             self.total_score = self.landscape.score(start_pos)
 

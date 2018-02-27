@@ -12,7 +12,7 @@
 3:
   name: start_pos_list
   prompt: Position for testing
-  default: 5-5;5-5;5-5;5-5
+  default: 0-0;0-0;0-0;0-0
 4:
   name: experimenter
   prompt: Experimenter initials

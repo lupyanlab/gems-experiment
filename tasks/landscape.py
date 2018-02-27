@@ -54,16 +54,14 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
 
     win = visual.Window(size=(800, 800), units='pix', color=(0.6, 0.6, 0.6))
 
-    grid_size = 10
-    positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
+    grid_size = 7
+    positions = linspace(0, 70, grid_size, endpoint=False, dtype='int')
     grid_positions = list(product(positions, positions))
 
     gabor_size = 60
-    positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
-    grid_positions = list(product(positions, positions))
     stim_positions = gems.create_grid_positions(n_rows=grid_size, n_cols=grid_size,
-                                           win_size=win.size,
-                                           stim_size=gabor_size)
+                                                win_size=win.size,
+                                                stim_size=gabor_size)
 
     output_dir = gabors_dir if move_to_r_pkg else gems.config.GABORS_DIR
 
@@ -100,7 +98,7 @@ def draw(ctx, name, open_after=False):
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.contour3D(range(100), range(100), grid, 50)
+        ax.contour3D(range(70), range(70), grid, 50)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('score')
