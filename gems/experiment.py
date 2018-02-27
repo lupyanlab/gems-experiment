@@ -115,8 +115,8 @@ class Experiment(object):
 
         instructions_condition = self.get_var('instructions_condition')
         grid_positions = dict(
-            orientation = [(10, 10), (50, 10), (90, 10)],
-            spatial_frequency = [(10, 10), (10, 50), (10, 90)],
+            orientation = [(31, 10), (50, 10), (69, 10)],
+            spatial_frequency = [(10, 31), (10, 50), (10, 69)],
         )
         selected_grid_positions = grid_positions[instructions_condition]
         stim_positions = [(-200, -150), (0, -150), (200, -150)]
@@ -138,8 +138,8 @@ class Experiment(object):
             training_instructions=training_instructions)
 
         grid_positions = dict(
-            orientation = [(10, 10), (50, 10), (90, 10)],
-            spatial_frequency = [(10, 10), (10, 50), (10, 90)],
+            orientation = [(31, 10), (50, 10), (69, 10)],
+            spatial_frequency = [(10, 31), (10, 50), (10, 69)],
         )
         selected_grid_positions = grid_positions[instructions_condition]
         stim_positions = [(-200, -150), (0, -150), (200, -150)]
