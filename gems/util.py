@@ -120,7 +120,7 @@ def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
             if input_error:
                 popup_error(input_error)
             else:
-                with open(last_subj_info, 'w') as f:
+                with open(last_subj_info, 'wb') as f:
                     pickle.dump(subj_info, f)
                 break
 
