@@ -31,14 +31,14 @@ class Experiment(object):
     win_color = (.6, .6, .6)
 
     # Stimulus presentation ----
-    gabor_size = 80     # in pix
+    gabor_size = 100     # in pix
     n_gabors = 6        # gabors per trial
-    stim_radius = 200   # pix between fix and center of grating stim
+    stim_radius = 240   # pix between fix and center of grating stim
 
     # Players ----
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
-    pos = (0, 0)      # initial grid position on the landscape
+    pos = (5, 5)      # initial grid position on the landscape
     n_training_trials = 20
     n_trials_per_block = 40
 
@@ -95,11 +95,8 @@ class Experiment(object):
             height=30)
 
         self.fixation = self.make_text('+', draw=False, height=30, pos=(0,0))
-
         self.mouse = event.Mouse()
-
         self.use_landscape('SimpleHill')
-
         self.exp_timer = core.Clock()
 
     def run(self):
@@ -152,9 +149,7 @@ class Experiment(object):
             gabor = self.landscape.get_grating_stim(grid_pos)
             gabor.pos = gabor_pos
             gabor.draw()
-
             gabors.append(gabor)
-
 
         self.make_title(self.get_text('training_title'))
         self.make_text(instructions_text)
