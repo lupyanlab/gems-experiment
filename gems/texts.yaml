@@ -13,15 +13,15 @@ training: |
   {training_instructions}
   Your teacher offers to take you to a nearby quarry to find some gems. The teacher will show you a few gems to look at. You have to click on the one you think is the most valuable. Then the teacher will show you the value of the one you clicked, and the values of the ones you did not click. Your goal is to learn for yourself how to tell the most expensive gem on each trial.
 
-  Click on the more valuable gem to continue. If you do not know which gem is more valuable, reread the instructions above. If you do not understand the instructions above, please ask for help from the researcher.
+  Click on the most valuable gem to continue. If you do not know which gem is most valuable, reread the instructions above. If you do not understand the instructions above, please ask for help from the researcher.
 training_instructions:
   orientation: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem in the middle is the more valuable gem.
+    Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the gems pictured below and see if you can tell the difference in orientation. The gem in the middle is the most valuable gem.
   spatial_frequency: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem in the middle is the more valuable gem.
+    Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the gems pictured below and see if you can tell the difference in stripe width. The gem in the middle is the most valuable gem.
 test_title: Your training is complete!
 test: |
-  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial.
+  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial and get the highest total score.
 
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: |
