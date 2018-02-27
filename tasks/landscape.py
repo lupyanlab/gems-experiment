@@ -36,7 +36,7 @@ def data(ctx, name, move_to_r_pkg=False):
 
 
 @task
-def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
+def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False, big=False):
     """Draw gabors sampled from the landscape.
 
     Examples:
@@ -52,18 +52,28 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
         if not path.isdir(gabors_dir):
             mkdir(gabors_dir)
 
-    win = visual.Window(size=(800, 800), units='pix', color=(0.6, 0.6, 0.6))
+    output_dir = gabors_dir if move_to_r_pkg else gems.config.GABORS_DIR
 
-    grid_size = 7
-    positions = linspace(0, 70, grid_size, endpoint=False, dtype='int')
+    if big:
+        size = (1250, 1250)
+        grid_size = 15
+        positions = linspace(0, 75, grid_size, endpoint=False, dtype='int')
+        output_fmt = path.join(output_dir, '{}GemsBig.png')
+    else:
+        size = (800, 800)
+        grid_size = 8
+        positions = linspace(0, 80, grid_size, endpoint=False, dtype='int')
+        output_fmt = path.join(output_dir, '{}Gems.png')
+
+    win = visual.Window(size=size, units='pix', color=(0.6, 0.6, 0.6))
+
+
     grid_positions = list(product(positions, positions))
 
     gabor_size = 60
     stim_positions = gems.create_grid_positions(n_rows=grid_size, n_cols=grid_size,
                                                 win_size=win.size,
                                                 stim_size=gabor_size)
-
-    output_dir = gabors_dir if move_to_r_pkg else gems.config.GABORS_DIR
 
     landscapes = get_landscapes_from_name(name)
     for name, landscape in landscapes.items():
@@ -81,7 +91,7 @@ def gabors(ctx, name, output=None, move_to_r_pkg=False, open_after=False):
         win.flip()
         win.getMovieFrame()
 
-        output = path.join(output_dir, '{}Gems.png'.format(name))
+        output = output_fmt.format(name)
         win.saveMovieFrames(output)
 
         if open_after:
