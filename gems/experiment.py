@@ -23,6 +23,7 @@ class Experiment(object):
     # Wait times in seconds ----
     duration_fix = 0.5
     duration_feedback = 2
+    duration_training_feedback = 4
     duration_iti = 1.0
     duration_break_minimum = 5
 
@@ -343,8 +344,6 @@ class Experiment(object):
         return trial_data
 
     def give_training_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
-        self.trial_header.text = self.get_trial_text('training_feedback')
-
         prev_score = self.landscape.score(prev_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)
 
@@ -376,6 +375,16 @@ class Experiment(object):
             elif score == most_valuable_score:
                 most_valuable_grid_pos_list.append(grid_pos)
 
+        picked_correctly = (selected_grid_pos in most_valuable_grid_pos_list)
+        if picked_correctly:
+            # Participant picked the most valuable on this trial.
+            self.trial_header.text = self.get_trial_text('training_correct_feedback')
+            self.trial_header.color = 'green'
+        else:
+            # Participant did not pick the most valuable.
+            # Make them pick the most valuable.
+            self.trial_header.text = self.get_trial_text('training_incorrect_feedback')
+
         self.landscape_title.draw()
         self.trial_header.draw()
         if trial == 0:
@@ -384,6 +393,8 @@ class Experiment(object):
         highlight.draw()
         self.win.flip()
         self.get_clicked_gabor(gabors, most_valuable_grid_pos_list)
+
+        self.trial_header.color = 'black'  # reset
 
     def give_selected_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
         prev_score = self.landscape.score(prev_grid_pos)
