@@ -39,7 +39,7 @@ class Experiment(object):
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
-    n_training_trials = 20
+    n_training_trials = 30
     n_trials_per_block = 40
 
     # Defaults ----
