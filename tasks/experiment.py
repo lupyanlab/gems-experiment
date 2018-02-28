@@ -1,3 +1,4 @@
+from os import path, mkdir
 from invoke import task
 import gems
 from gems import Experiment
@@ -15,6 +16,32 @@ def show_texts(ctx, instructions_condition='orientation'):
     experiment.show_break()
     # experiment.show_end()
     # experiment.quit()
+
+
+@task
+def show_training(ctx, save_screenshots=False, move_to_r_pkg=False):
+    """Show both instruction types."""
+    Experiment.win_size = (600 * 2.5, 400 * 2.5)
+    experiment = Experiment()
+    experiment.use_landscape('SimpleHill')
+
+    screenshots_dir = 'gems/screenshots'
+    if move_to_r_pkg:
+        screenshots_dir = '../data/inst/extdata'
+
+    if not path.isdir(screenshots_dir):
+        mkdir(screenshots_dir)
+
+    experiment.condition_vars['instructions_condition'] = 'orientation'
+    experiment.show_welcome(save_screenshot=save_screenshots)
+    experiment.show_training(save_screenshot=save_screenshots)
+
+    experiment.condition_vars['instructions_condition'] = 'spatial_frequency'
+    experiment.show_welcome(save_screenshot=save_screenshots)
+    experiment.show_training(save_screenshot=save_screenshots)
+
+    if save_screenshots:
+        ctx.run('mv ./*.png {}'.format(screenshots_dir), echo=True)
 
 
 @task
