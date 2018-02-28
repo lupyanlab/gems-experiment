@@ -129,7 +129,7 @@ class Experiment(object):
         right_gabor.draw()
         self.win.flip()
         if save_screenshot:
-            self.save_screenshot('welcome_{}.png'.format(instructions_condition))
+            self.save_screenshot('welcome_{}.png'.format(self.get_var('instructions_condition')))
         event.waitKeys(keyList=self.response_keys)
 
     def show_training(self, save_screenshot=True):
@@ -150,7 +150,7 @@ class Experiment(object):
         right_gabor.draw()
         self.win.flip()
         if save_screenshot:
-            self.save_screenshot('training_{}.png'.format(instructions_condition))
+            self.save_screenshot('training_{}.png'.format(self.get_var('instructions_condition')))
 
         self.mouse.clickReset()
         while True:
