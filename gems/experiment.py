@@ -109,7 +109,7 @@ class Experiment(object):
         self.show_end()
         self.quit()
 
-    def show_welcome(self):
+    def show_welcome(self, save_screenshot=False):
         instructions_text = self.get_text('instructions').format(
             response_text=self.response_text)
 
@@ -129,9 +129,11 @@ class Experiment(object):
         self.make_text(instructions_text)
         self.make_explorer()
         self.win.flip()
+        if save_screenshot:
+            self.save_screenshot('welcome_{}.png'.format(instructions_condition))
         event.waitKeys(keyList=self.response_keys)
 
-    def show_training(self):
+    def show_training(self, save_screenshot=True):
         instructions_condition = self.get_var('instructions_condition')
         training_instructions = self.get_text('training_instructions')[instructions_condition]
         instructions_text = self.get_text('training').format(
@@ -154,6 +156,8 @@ class Experiment(object):
         self.make_title(self.get_text('training_title'))
         self.make_text(instructions_text)
         self.win.flip()
+        if save_screenshot:
+            self.save_screenshot('training_{}.png'.format(instructions_condition))
 
         self.mouse.clickReset()
         while True:
@@ -179,6 +183,10 @@ class Experiment(object):
             (left, _, _) = self.mouse.getPressed()
             if left:
                 break
+
+    def save_screenshot(self, name):
+        self.win.getMovieFrame()
+        self.win.saveMovieFrames(name)
 
     def run_training_trials(self):
         training_landscapes = dict(
