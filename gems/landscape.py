@@ -139,7 +139,7 @@ class Landscape(object):
 
 class SimpleHill(Landscape):
     """A landscape with a peak in the middle of both stimulus dimensions."""
-    min_ori, max_ori = 40, 90
+    min_ori, max_ori = 10, 90
     min_sf, max_sf = 0.04, 0.18
     n_rows, n_cols = 71, 71
 

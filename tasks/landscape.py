@@ -108,7 +108,7 @@ def draw(ctx, name, open_after=False):
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.contour3D(range(70), range(70), grid, 50)
+        ax.contour3D(range(71), range(71), grid, 50)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('score')
