@@ -449,6 +449,7 @@ class Experiment(object):
 
         self.mouse.clickReset()
         waiting_for_response = True
+        event.clearEvents(eventType='keyboard')
         while waiting_for_response:
             core.wait(0.01)
             (left_click, _, _), (time, _, _) = self.mouse.getPressed(getTime=True)
