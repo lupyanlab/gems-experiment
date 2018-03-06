@@ -99,6 +99,11 @@ class Experiment(object):
         self.use_landscape('SimpleHill')
         self.exp_timer = core.Clock()
 
+        try:
+            self.prefilled_survey_url = self.get_text('survey').format(**self.condition_vars)
+        except KeyError:
+            self.prefilled_survey_url = self.get_text('survey').format(subj_id='', computer='')
+
     def run(self):
         self.exp_timer.reset()
         self.show_welcome()
@@ -264,11 +269,7 @@ class Experiment(object):
         self.make_explorer()
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
-
-        prefilled_url = self.get_text('survey').format(**self.condition_vars)
-        webbrowser.open(prefilled_url)
-        with open('survey-links.txt', 'a') as f:
-            f.write(prefilled_url + '\n')
+        webbrowser.open(self.prefilled_survey_url)
 
     def sample_gabors(self):
         """Sample gabors in a certain radius and place them on the screen.
@@ -457,6 +458,11 @@ class Experiment(object):
                     if gabor.contains(pos):
                         waiting_for_response = False
                         break
+
+            keys = event.getKeys(keyList=['q'])
+            if keys:
+                self.show_end()
+                self.quit()
 
         return grid_pos, time
 
