@@ -12,7 +12,8 @@ def write_pos_lists(ctx, clear=False):
     pos_lists_filename = 'pos-lists.txt'
 
     data_dir = 'data'
-    data_filepaths = ['%s/%s' % (data_dir, data_file) for data_file in listdir(data_dir)]
+    data_filepaths = ['%s/%s' % (data_dir, data_file)
+                      for data_file in listdir(data_dir)]
 
     if clear:
         remove(pos_lists_filename)
@@ -21,8 +22,9 @@ def write_pos_lists(ctx, clear=False):
         with open(pos_lists_filename, 'w') as f:
             f.write('0-0;0-0;0-0;0-0\n')
 
-    prev_pos_list_strs = [pos_list_str.strip() for pos_list_str in open(pos_lists_filename)]
-    print('prev_pos_list_strs: %s' % prev_pos_list_strs)
+    prev_pos_list_strs = [pos_list_str.strip()
+                          for pos_list_str in open(pos_lists_filename)]
+
     with open('pos-lists.txt', 'a') as appender:
         for path_name in data_filepaths:
             data = pandas.read_csv(path_name)

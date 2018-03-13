@@ -21,7 +21,8 @@ def parse_pos_list(str_pos_list):
 
 def get_pos_list_from_ix(pos_list_ix):
     pos_lists = [pos_list_str.strip() for pos_list_str in open('pos-lists.txt')]
-    return pos_lists[pos_list_ix]
+    assert pos_list_ix < len(pos_lists), "pos_list_ix is too big! Max is %s" % (len(pos_lists)-1)
+    return parse_pos_list(pos_lists[pos_list_ix])
 
 def create_grid(n_rows, n_cols):
     """Create all row, col grid positions.
