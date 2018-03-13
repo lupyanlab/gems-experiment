@@ -112,7 +112,9 @@ def run_test_trials(ctx, n_test_trials=5, instructions_condition='orientation'):
     Experiment.win_size = (600 * 2.5, 400 * 2.5)
     Experiment.n_trials_per_block = n_test_trials
     output = 'test-{}.csv'.format(instructions_condition)
-    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output, starting_positions=[(0,0), ])
+
+    starting_positions = gems.util.get_pos_list_from_ix(10)
+    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output, starting_positions=starting_positions[:1])
     experiment.use_landscape('SimpleHill')
     experiment.run_test_trials()
     experiment.quit()
