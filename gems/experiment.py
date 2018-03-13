@@ -138,7 +138,7 @@ class Experiment(object):
             self.save_screenshot('welcome_{}.png'.format(instructions_condition))
         event.waitKeys(keyList=self.response_keys)
 
-    def show_training(self, save_screenshot=True):
+    def show_training(self, save_screenshot=False):
         instructions_condition = self.get_var('instructions_condition')
         training_instructions = self.get_text('training_instructions')[instructions_condition]
         instructions_text = self.get_text('training').format(

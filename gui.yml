@@ -10,9 +10,9 @@
     - orientation
     - spatial_frequency
 3:
-  name: start_pos_list
+  name: start_pos_list_ix
   prompt: Position for testing
-  default: 0-0;0-0;0-0;0-0
+  default: 0
 4:
   name: experimenter
   prompt: Experimenter initials

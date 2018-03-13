@@ -1,8 +1,45 @@
-from os import path, mkdir
+from os import path, mkdir, listdir, remove
 from invoke import task
+import yaml
+import pandas
 import gems
 from gems import Experiment
 
+
+@task
+def write_pos_lists(ctx, clear=False):
+    """Write pos at trial 20 to text file."""
+    pos_lists_filename = 'pos-lists.txt'
+
+    data_dir = 'data'
+    data_filepaths = ['%s/%s' % (data_dir, data_file)
+                      for data_file in listdir(data_dir)]
+
+    if clear:
+        remove(pos_lists_filename)
+
+    if not path.exists(pos_lists_filename):
+        with open(pos_lists_filename, 'w') as f:
+            f.write('0-0;0-0;0-0;0-0\n')
+
+    prev_pos_list_strs = [pos_list_str.strip()
+                          for pos_list_str in open(pos_lists_filename)]
+
+    with open('pos-lists.txt', 'a') as appender:
+        for path_name in data_filepaths:
+            data = pandas.read_csv(path_name)
+
+            midway_positions = data.ix[
+                (data.landscape_ix > 0) & (data.trial == 20),
+                'pos'].tolist()
+
+            # expecting four positions
+            if len(midway_positions) != 4:
+                continue
+
+            pos_list_str = ';'.join(midway_positions)
+            if pos_list_str not in prev_pos_list_strs:
+                appender.write(pos_list_str+'\n')
 
 @task
 def show_texts(ctx, instructions_condition='orientation'):
@@ -75,7 +112,9 @@ def run_test_trials(ctx, n_test_trials=5, instructions_condition='orientation'):
     Experiment.win_size = (600 * 2.5, 400 * 2.5)
     Experiment.n_trials_per_block = n_test_trials
     output = 'test-{}.csv'.format(instructions_condition)
-    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output, starting_positions=[(0,0), ])
+
+    starting_positions = gems.util.get_pos_list_from_ix(10)
+    experiment = Experiment(subj_id='pierce', instructions_condition=instructions_condition, filename=output, starting_positions=starting_positions[:1])
     experiment.use_landscape('SimpleHill')
     experiment.run_test_trials()
     experiment.quit()
