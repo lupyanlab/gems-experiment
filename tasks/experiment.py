@@ -26,8 +26,13 @@ def write_pos_lists(ctx, clear=False):
                           for pos_list_str in open(pos_lists_filename)]
 
     with open('pos-lists.txt', 'a') as appender:
-        for path_name in data_filepaths:
+        for path_name in sorted(data_filepaths):
             data = pandas.read_csv(path_name)
+            if 'start_pos_list_ix' not in data:
+                continue
+
+            if data.start_pos_list_ix.iloc[0] != 0:
+                continue
 
             midway_positions = data.ix[
                 (data.landscape_ix > 0) & (data.trial == 20),
