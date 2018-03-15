@@ -292,6 +292,8 @@ class Experiment(object):
             instructions = self.get_var('instructions_condition'),
             sight_radius = self.sight_radius,
             n_gabors = self.n_gabors,
+            start_pos_list_ix = self.get_var('start_pos_list_ix'),
+            start_pos_list = pos_list_to_str(self.get_var('starting_positions')),
             pos = pos_to_str(self.pos)
         )
         trial_data.update(kwargs)

@@ -3,7 +3,7 @@ from .config import DATA_DIR
 
 data_columns = [
     'subj_id', 'date', 'computer', 'experimenter',
-    'instructions', 'sight_radius', 'n_gabors',
+    'instructions', 'sight_radius', 'n_gabors', 'start_pos_list_ix', 'start_pos_list',
     'landscape_ix', 'landscape_name', 'starting_pos', 'starting_score', 'trial',
     'feedback', 'pos', 'stims',
     'selected', 'rt', 'score', 'delta',
