@@ -85,6 +85,16 @@ def show_training(ctx, save_screenshots=False, move_to_r_pkg=False):
     if save_screenshots:
         ctx.run('mv ./*.png {}'.format(screenshots_dir), echo=True)
 
+@task
+def screenshot_training_trials(ctx):
+    Experiment.win_size = (600 * 2.5, 400 * 2.5)
+    experiment = Experiment()
+    experiment.use_landscape('OrientationBias')
+    experiment.pos = (5,5)
+    experiment.total_score = experiment.landscape.score(experiment.pos)
+    experiment.run_trial(trial=1, feedback='training', landscape_title='Training Quarry', save_screenshot=True)
+    experiment.run_trial(trial=1, feedback='selected', landscape_title='Quarry 1', save_screenshot=True)
+
 
 @task
 def show_survey(ctx):

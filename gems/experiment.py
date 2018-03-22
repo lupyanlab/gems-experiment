@@ -299,7 +299,7 @@ class Experiment(object):
         trial_data.update(kwargs)
         return trial_data
 
-    def run_trial(self, trial=0, feedback='training', landscape_title=''):
+    def run_trial(self, trial=0, feedback='training', landscape_title='', save_screenshot=False):
         gabors = self.sample_gabors()
         trial_data = self.make_trial_data(feedback=feedback,
                                           stims=pos_list_to_str(gabors.keys()),
@@ -324,6 +324,8 @@ class Experiment(object):
         for gabor in gabors.values():
             gabor.draw()
         self.win.flip()
+        if save_screenshot:
+            self.save_screenshot('{}_trial.png'.format(feedback))
 
         grid_pos, time = self.get_clicked_gabor(gabors)
         trial_data['exp_time'] = self.exp_timer.getTime()
@@ -338,9 +340,9 @@ class Experiment(object):
         self.total_score = new_gem_score  # update total score
 
         if feedback == 'training':
-            self.give_training_feedback(gabors, prev_grid_pos, grid_pos, trial)
+            self.give_training_feedback(gabors, prev_grid_pos, grid_pos, trial, save_screenshot=save_screenshot)
         elif feedback == 'selected':
-            self.give_selected_feedback(gabors, prev_grid_pos, grid_pos, trial)
+            self.give_selected_feedback(gabors, prev_grid_pos, grid_pos, trial, save_screenshot=save_screenshot)
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = round(time, 2)
@@ -354,7 +356,7 @@ class Experiment(object):
 
         return trial_data
 
-    def give_training_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
+    def give_training_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial, save_screenshot=False):
         prev_score = self.landscape.score(prev_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)
 
@@ -403,11 +405,13 @@ class Experiment(object):
         self.draw_score(prev_score)
         highlight.draw()
         self.win.flip()
+        if save_screenshot:
+            self.save_screenshot('training_trial_feedback.png')
         self.get_clicked_gabor(gabors, most_valuable_grid_pos_list)
 
         self.trial_header.color = 'black'  # reset
 
-    def give_selected_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial):
+    def give_selected_feedback(self, gabors, prev_grid_pos, selected_grid_pos, trial, save_screenshot=False):
         prev_score = self.landscape.score(prev_grid_pos)
         selected_score = self.landscape.score(selected_grid_pos)
         delta = selected_score - prev_score
@@ -431,6 +435,8 @@ class Experiment(object):
         self.draw_score(prev_score)
         self.landscape_title.draw()
         self.win.flip()
+        if save_screenshot:
+            self.save_screenshot('test_trial_feedback.png')
         core.wait(self.duration_feedback)
 
     def get_clicked_gabor(self, gabors, target=None):
