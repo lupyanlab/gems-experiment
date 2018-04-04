@@ -10,7 +10,8 @@ def trial(ctx, move_to_r_pkg=False):
     """Draw a trial screen."""
     win_size = (500, 500)
     gabor_size = 100
-    display_radius = 120 
+    display_radius = 120
+    sight_radius = 8
 
     win = visual.Window(size=win_size, units='pix', color=(0.6,0.6,0.6))
     visual.TextStim(win, text='Click on the gem you think is most valuable',
@@ -19,10 +20,11 @@ def trial(ctx, move_to_r_pkg=False):
     stim_positions = gems.create_radial_positions(6, radius=display_radius)
     landscape = gems.landscape.SimpleHill(seed=143)
     landscape.grating_stim_kwargs.update({'win': win, 'size': gabor_size})
-    gabors = landscape.sample_gabors(6, (5, 5), 12)
+    gabors = landscape.sample_gabors(6, (10, 10), radius=sight_radius)
     for (grid_pos, stim_pos) in zip(gabors.keys(), stim_positions):
         gabors[grid_pos].pos = stim_pos
         gabors[grid_pos].draw()
+        print(grid_pos)
     win.flip()
     win.getMovieFrame()
     dst_dir = '../data/inst/extdata' if move_to_r_pkg else '.'
