@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 source /usr/local/anaconda3/bin/activate
 source activate psychopy
+export ANSIBLE_VAULT_PASSWORD_FILE=~/.ansible_vault_password_files/gems.txt

@@ -1,4 +1,6 @@
+import itertools
 from invoke import task
+import pandas
 
 from tasks.googledrive import connect_google_sheets
 
