@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+import os
+import pandas
+from pathlib import Path
+
+names = ['GEMS{}.csv'.format(i) for i in [241, 242, 243, 244, 245, 246]]
+new_names = ['GEMS{}.csv'.format(i) for i in [136, 137, 138, 139, 140, 141]]
+
+for old, new in zip(names, new_names):
+    print('changing {} to {}'.format(old, new))
+    df = pandas.read_csv(old)
+    df['subj_id'] = Path(new).stem
+    df.to_csv(new, index=False)
