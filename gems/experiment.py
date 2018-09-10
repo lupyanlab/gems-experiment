@@ -10,9 +10,8 @@ from psychopy import visual, core, event
 from . import landscape
 from .config import pkg_root
 from .display import create_radial_positions
-from .util import get_subj_info, pos_to_str, pos_list_to_str
+from .util import get_subj_info, pos_to_str, pos_list_to_str, convert_condition_vars
 from .data import make_output_filepath, check_output_filepath, data_columns
-from .conditions import verify_condition_vars, convert_condition_vars
 
 
 class Experiment(object):
@@ -31,7 +30,7 @@ class Experiment(object):
     win_color = (.6, .6, .6)
 
     # Stimulus presentation ----
-    gabor_size = 100     # in pix
+    gabor_size = 100    # in pix
     n_gabors = 6        # gabors per trial
     stim_radius = 240   # pix between fix and center of grating stim
 
@@ -39,7 +38,6 @@ class Experiment(object):
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
-    n_training_trials = 30
     n_trials_per_block = 40
 
     # Defaults ----
@@ -51,7 +49,6 @@ class Experiment(object):
         """Create an experiment after obtaining condition vars from a GUI."""
         subj_info = get_subj_info(gui_yaml,
             check_exists=check_output_filepath,
-            verify=verify_condition_vars,
             save_order=True)
         subj_info = convert_condition_vars(subj_info)
         return cls(**subj_info)
@@ -107,8 +104,6 @@ class Experiment(object):
     def run(self):
         self.exp_timer.reset()
         self.show_welcome()
-        self.show_training()
-        self.run_training_trials()
         self.show_test()
         self.run_test_trials()
         self.show_end()
@@ -118,12 +113,7 @@ class Experiment(object):
         instructions_text = self.get_text('instructions').format(
             response_text=self.response_text)
 
-        instructions_condition = self.get_var('instructions_condition')
-        grid_positions = dict(
-            orientation = [(31, 10), (50, 10), (69, 10)],
-            spatial_frequency = [(10, 31), (10, 50), (10, 69)],
-        )
-        selected_grid_positions = grid_positions[instructions_condition]
+        selected_grid_positions = [(30, 30), (50, 50), (70, 70)]
         stim_positions = [(-200, -150), (0, -150), (200, -150)]
         for grid_pos, gabor_pos in zip(selected_grid_positions, stim_positions):
             gabor = self.landscape.get_grating_stim(grid_pos)
@@ -134,87 +124,11 @@ class Experiment(object):
         self.make_text(instructions_text)
         self.make_explorer()
         self.win.flip()
-        if save_screenshot:
-            self.save_screenshot('welcome_{}.png'.format(instructions_condition))
         event.waitKeys(keyList=self.response_keys)
-
-    def show_training(self, save_screenshot=False):
-        instructions_condition = self.get_var('instructions_condition')
-        training_instructions = self.get_text('training_instructions')[instructions_condition]
-        instructions_text = self.get_text('training').format(
-            training_instructions=training_instructions)
-
-        grid_positions = dict(
-            orientation = [(31, 10), (50, 10), (69, 10)],
-            spatial_frequency = [(10, 31), (10, 50), (10, 69)],
-        )
-        selected_grid_positions = grid_positions[instructions_condition]
-        stim_positions = [(-200, -150), (0, -150), (200, -150)]
-
-        gabors = []
-        for grid_pos, gabor_pos in zip(selected_grid_positions, stim_positions):
-            gabor = self.landscape.get_grating_stim(grid_pos)
-            gabor.pos = gabor_pos
-            gabor.draw()
-            gabors.append(gabor)
-
-        self.make_title(self.get_text('training_title'))
-        self.make_text(instructions_text)
-        self.win.flip()
-        if save_screenshot:
-            self.save_screenshot('training_{}.png'.format(instructions_condition))
-
-        self.mouse.clickReset()
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                pos = self.mouse.getPos()
-                if gabors[1].contains(pos):
-                    break
-
-            core.wait(0.05)
-
-        self.make_title('Are you ready to begin?')
-        self.make_text('You will now collect {} gems from the Training Quarry. Click anywhere to begin.'.format(self.n_training_trials))
-
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if not left:
-                break
-
-        self.win.flip()
-        self.mouse.clickReset()
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                break
 
     def save_screenshot(self, name):
         self.win.getMovieFrame()
         self.win.saveMovieFrames(name)
-
-    def run_training_trials(self):
-        training_landscapes = dict(
-            orientation=landscape.OrientationBias(),
-            spatial_frequency=landscape.SpatialFrequencyBias(),
-        )
-        instructions_condition = self.get_var('instructions_condition')
-
-        self.landscape = training_landscapes[instructions_condition]
-        self.pos = (0, 0)
-        self.total_score = self.landscape.score(self.pos)
-
-        block_data = dict(
-            landscape_ix=0,
-            landscape_name=self.landscape.__class__.__name__,
-            starting_pos=pos_to_str(self.pos),
-            starting_score=self.total_score
-        )
-
-        for trial in range(self.n_training_trials):
-            trial_data = self.run_trial(trial=trial, feedback='training', landscape_title='Training Quarry')
-            trial_data.update(block_data)
-            self.write_trial(trial_data)
 
     def show_test(self):
         self.make_title(self.texts['test_title'])
@@ -240,11 +154,10 @@ class Experiment(object):
                 break
 
     def run_test_trials(self):
-        condition = self.get_var('instructions_condition')
 
         self.use_landscape('SimpleHill')
 
-        for landscape_ix, start_pos in enumerate(self.get_var('starting_positions')):
+        for landscape_ix, start_pos in enumerate([(0,0), (0,0), (0,0), (0,0)]):
             if landscape_ix > 0:
                 self.show_break()
 
@@ -289,11 +202,8 @@ class Experiment(object):
             date = self.get_var('date'),
             computer = self.get_var('computer'),
             experimenter = self.get_var('experimenter'),
-            instructions = self.get_var('instructions_condition'),
             sight_radius = self.sight_radius,
             n_gabors = self.n_gabors,
-            start_pos_list_ix = self.get_var('start_pos_list_ix'),
-            start_pos_list = pos_list_to_str(self.get_var('starting_positions')),
             pos = pos_to_str(self.pos)
         )
         trial_data.update(kwargs)

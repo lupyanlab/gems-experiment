@@ -8,7 +8,7 @@ from numpy import linspace, random, log, geomspace
 from pandas import DataFrame, read_csv
 
 from .util import create_grid
-from .score_funcs import simple_hill, orientation_bias, spatial_frequency_bias
+from .score_funcs import simple_hill
 from .config import LANDSCAPE_FILES
 
 
@@ -149,15 +149,3 @@ class SimpleHill(Landscape):
 
     def get_score(self, grid_pos):
         return simple_hill(grid_pos, normalize=self.normalize)
-
-
-class OrientationBias(SimpleHill):
-    """A biased landscape where only orientation matters."""
-    def get_score(self, grid_pos):
-        return orientation_bias(grid_pos, normalize=self.normalize)
-
-
-class SpatialFrequencyBias(SimpleHill):
-    """"A biased landscape where only spatial frequency matters."""
-    def get_score(self, grid_pos):
-        return spatial_frequency_bias(grid_pos, normalize=self.normalize)

@@ -128,7 +128,7 @@ def radius(ctx, grid_pos='10-10', sight_radius=8):
 
 def get_landscapes_from_name(name):
     if name == 'all':
-        names = ['SimpleHill', 'OrientationBias', 'SpatialFrequencyBias',]
+        names = ['SimpleHill', ]
     else:
         names = [name, ]
 

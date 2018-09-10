@@ -6,6 +6,8 @@ import yaml
 
 from psychopy import gui, data, core
 
+from .data import make_output_filepath
+
 def pos_to_str(pos):
     x, y = pos
     return '{x}-{y}'.format(x=x, y=y)
@@ -120,18 +122,23 @@ def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
 
         if check_exists(subj_info):
             popup_error('That subj_id already exists.')
+        elif verify is not None and verify(subj_info):
+            popup_error(verify(subj_info))
         else:
-            input_error = verify(subj_info)
-            if input_error:
-                popup_error(input_error)
-            else:
-                with open(last_subj_info, 'wb') as f:
-                    pickle.dump(subj_info, f)
-                break
+            with open(last_subj_info, 'wb') as f:
+                pickle.dump(subj_info, f)
+            break
 
     if save_order:
         subj_info['_order'] = ordered_names + fixed_fields
     return subj_info
+
+
+def convert_condition_vars(subj_info):
+    new_subj_info = subj_info.copy()
+    new_subj_info['filename'] = make_output_filepath(subj_info)
+    return new_subj_info
+
 
 def popup_error(text):
 	errorDlg = gui.Dlg(title="Error", pos=(200,400))
