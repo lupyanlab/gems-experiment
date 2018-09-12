@@ -5,23 +5,26 @@ welcome: |
 instructions: |
   Congratulations! You have just arrived on Planet Teeb. You are a space explorer who has traveled here to collect precious gems, but you do not know which gems are more valuable than others.
 
-  After arriving, you seek out a teacher who can teach you which gems are worth more than others. Pay close attention to the instructions you get from your teacher, as it will help you to find the most valuable gems in the game.
+  {generation_instructions}
+  After you have collected gems of your own, you will be asked to write your own instructions for the next explorer that lands on Planet Teeb.
 
-  Press the SPACEBAR to read the teacher's instructions.
-training_title: The difference between cheap and expensive gems
-training: |
-  {training_instructions}
-  Your teacher offers to take you to a nearby quarry to find some gems. The teacher will show you a few gems to look at. You have to click on the one you think is the most valuable. Then the teacher will show you the value of the one you clicked, and the values of the ones you did not click. Your goal is to learn for yourself how to tell the most expensive gem on each trial.
+  Press the SPACEBAR to continue
+generation_instructions:
+  generation_0: |
+    You are the first person on the planet, and there is no one to teach you which gems are more valuable than others. You have to learn yourself to decide which gems are the most valuable.
+  generation_N: |
+    After you arrive, you seek out a teacher to help you decide which gems are the most valuable.
+ancestor_instructions_title: |
+  Instructions from the previous explorer
+ancestor_instructions: |
+  Here are the instructions you received from the explorer who was here before you. Read these instructions carefully as they will help you select the most valuable gems.
 
-  Click on the most valuable gem to continue. If you do not know which gem is most valuable, reread the instructions above. If you do not understand the instructions above, please ask for help from the researcher.
-training_instructions:
-  orientation: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the gems pictured below and see if you can tell the difference in orientation. The gem in the middle is the most valuable gem.
-  spatial_frequency: |
-    Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the gems pictured below and see if you can tell the difference in stripe width. The gem in the middle is the most valuable gem.
-test_title: Your training is complete!
+  {ancestor_response}
+
+  Press SPACEBAR to continue
+test_title: Are you ready to collect gems?
 test: |
-  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial and get the highest total score.
+  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. You will only learn the value of the gem you select, and not the values of the gems you did not select. Your goal is try to select the most valuable gem on each trial and get the highest total score.
 
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: |
@@ -41,8 +44,6 @@ end: |
   Press the SPACEBAR to exit this screen, and open the survey.
 trial:
   instructions: Click on the gem you think is most valuable.
-  training_incorrect_feedback: Click on the most valuable gem to continue.
-  training_correct_feedback: Good job! Click on the gem you selected again.
   summary: |
     The gem you selected was worth {new_score} bitrocks.
     Your total score is now {total_score} bitrocks.

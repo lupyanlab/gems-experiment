@@ -8,6 +8,10 @@
   prompt: Generation
   default: 1
 3:
+  name: inherit_from
+  prompt: subj_id to inherit from
+  default: ""
+4:
   name: experimenter
   prompt: Experimenter initials
   default: XXX

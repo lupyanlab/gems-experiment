@@ -1,3 +1,4 @@
+import string
 import subprocess
 import webbrowser
 from os import path
@@ -8,11 +9,11 @@ import pandas
 from psychopy import visual, core, event
 
 from . import landscape
-from .config import pkg_root
+from .config import pkg_root, data_columns, INSTRUCTIONS_DIR
 from .display import create_radial_positions
-from .util import get_subj_info, pos_to_str, pos_list_to_str, convert_condition_vars
-from .data import make_output_filepath, check_output_filepath, data_columns
-
+from .util import pos_to_str, pos_list_to_str
+from .subj_info import get_subj_info, make_output_filepath, check_output_filepath, convert_condition_vars, verify_subj_info
+from .inherited_instructions import load_ancestor_instructions
 
 class Experiment(object):
     # Responses ----
@@ -38,7 +39,7 @@ class Experiment(object):
     total_score = 0
     sight_radius = 8  # range of sight on the grid in the landscape
     pos = (0, 0)      # initial grid position on the landscape
-    n_trials_per_block = 40
+    n_trials_per_block = 1
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -49,6 +50,7 @@ class Experiment(object):
         """Create an experiment after obtaining condition vars from a GUI."""
         subj_info = get_subj_info(gui_yaml,
             check_exists=check_output_filepath,
+            verify=verify_subj_info,
             save_order=True)
         subj_info = convert_condition_vars(subj_info)
         return cls(**subj_info)
@@ -104,14 +106,23 @@ class Experiment(object):
     def run(self):
         self.exp_timer.reset()
         self.show_welcome()
-        self.show_test()
+        if self.get_var('generation') > 1:
+            self.show_inherited_instructions()
+        self.show_instructions()
         self.run_test_trials()
         self.show_end()
         self.quit()
 
     def show_welcome(self, save_screenshot=False):
+        generation_instructions = self.get_text("generation_instructions")
+        if self.get_var('generation') == 1:
+            generation_instructions = generation_instructions["generation_0"]
+        elif self.get_var('generation') > 1:
+            generation_instructions = generation_instructions["generation_N"]
+        else:
+            raise AssertionError("generation was not 1 or greater")
         instructions_text = self.get_text('instructions').format(
-            response_text=self.response_text)
+            generation_instructions=generation_instructions)
 
         selected_grid_positions = [(30, 30), (50, 50), (70, 70)]
         stim_positions = [(-200, -150), (0, -150), (200, -150)]
@@ -130,35 +141,84 @@ class Experiment(object):
         self.win.getMovieFrame()
         self.win.saveMovieFrames(name)
 
-    def show_test(self):
-        self.make_title(self.texts['test_title'])
-        self.make_text(self.texts['test'])
+    def show_inherited_instructions(self):
+        inherited = load_ancestor_instructions(self.get_var('inherit_from'))
+        self.make_title("Here are the instructions you found on the planet")
+        self.make_text(inherited)
+        self.make_text("Press SPACE to continue", pos=(-400, 0))
+        self.win.flip()
+        event.waitKeys(['space'])
+
+    def show_instructions(self):
+        self.make_title('Are you ready to begin?')
+        num_quarries = 4
+        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Press SPACE to begin.'.format(num_quarries, self.n_trials_per_block))
         self.make_explorer()
         self.win.flip()
         event.waitKeys(['space'])
 
-        self.make_title('Are you ready to begin?')
-        num_quarries = 4
-        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Click anywhere to begin.'.format(num_quarries, self.n_trials_per_block))
+    def record_instructions(self):
+        instructions = self.get_instructions()
+        instructions_path = path.join(INSTRUCTIONS_DIR, '{}.txt'.format(self.get_var('subj_id')))
+        open(instructions_path, 'w').write(instructions)
 
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if not left:
-                break
+    def get_instructions(self):
+        typing = True
+        is_cap = False
+        message = ''
+        title = self.make_title("Enter your instructions for the next explorer")
+        descr = self.make_text("Describe anything that might help the next explorer select the most valuable gems.",
+        pos=(0, 200))
+        text_box = self.make_text('_', pos=(-250, 0), wrapWidth=500, alignHoriz='left')
 
-        self.win.flip()
-        self.mouse.clickReset()
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                break
+        punct = dict(
+            period = '.',
+            comma = ',',
+            apostrophe = "'",
+        )
+        while typing:
+            keys = event.getKeys()
+            if keys:
+                key = keys[0]
+
+                if key == 'return':  # bit.ly/pyglet-key-names
+                    typing = False
+                    continue
+                elif key in ['lshift', 'rshift']:
+                    is_cap = True
+                    continue
+                elif key == 'space':
+                    key = ' '
+                elif key == 'backspace':
+                    message = message[:-1]
+                    key = ''
+                elif key in punct:
+                    key = punct[key]
+                elif key not in string.letters and key not in string.digits:
+                    continue
+
+                if is_cap:
+                    key = key.upper()
+                    is_cap = False
+
+                message += key
+                text_box.setText(message)
+
+            title.draw()
+            descr.draw()
+            text_box.draw()
+            self.win.flip()
+
+        return message
 
     def run_test_trials(self):
 
         self.use_landscape('SimpleHill')
 
         for landscape_ix, start_pos in enumerate([(0,0), (0,0), (0,0), (0,0)]):
-            if landscape_ix > 0:
+            if landscape_ix == 2:
+                self.record_instructions()
+            elif landscape_ix > 0:
                 self.show_break()
 
             self.pos = start_pos
