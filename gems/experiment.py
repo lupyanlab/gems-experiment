@@ -15,10 +15,11 @@ from .util import pos_to_str, pos_list_to_str
 from .subj_info import get_subj_info, make_output_filepath, check_output_filepath, convert_condition_vars, verify_subj_info
 from .inherited_instructions import load_ancestor_instructions
 
+
 class Experiment(object):
     # Responses ----
     response_keys = ['space']
-    response_text = 'Press SPACEBAR to continue'
+    response_text = 'Press SPACEBAR to continue.'
 
     # Wait times in seconds ----
     duration_fix = 0.5
@@ -37,9 +38,9 @@ class Experiment(object):
 
     # Players ----
     total_score = 0
-    sight_radius = 8  # range of sight on the grid in the landscape
-    pos = (0, 0)      # initial grid position on the landscape
-    n_trials_per_block = 1
+    sight_radius = 10  # range of sight on the grid in the landscape
+    pos = (0, 0)       # initial grid position on the landscape
+    n_trials_per_block = 30
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -108,21 +109,26 @@ class Experiment(object):
         self.show_welcome()
         if self.get_var('generation') > 1:
             self.show_inherited_instructions()
-        self.show_instructions()
+        self.show_pre_test()
         self.run_test_trials()
         self.show_end()
         self.quit()
 
     def show_welcome(self, save_screenshot=False):
-        generation_instructions = self.get_text("generation_instructions")
-        if self.get_var('generation') == 1:
-            generation_instructions = generation_instructions["generation_0"]
-        elif self.get_var('generation') > 1:
-            generation_instructions = generation_instructions["generation_N"]
+        self.make_title(self.get_text('welcome_title'))
+
+        # Show welcome text conditional on generation
+        generation = self.get_var('generation')
+        assert generation >= 1, "generation was not 1 or greater"
+        if generation == 1:
+            generation_instructions = self.get_text("generation_instructions")["generation_1"]
         else:
-            raise AssertionError("generation was not 1 or greater")
-        instructions_text = self.get_text('instructions').format(
+            generation_instructions = self.get_text("generation_instructions")["generation_N"]
+        welcome_text = self.get_text('welcome_text').format(
             generation_instructions=generation_instructions)
+        self.make_text(welcome_text)
+
+        self.make_explorer()
 
         selected_grid_positions = [(30, 30), (50, 50), (70, 70)]
         stim_positions = [(-200, -150), (0, -150), (200, -150)]
@@ -131,9 +137,6 @@ class Experiment(object):
             gabor.pos = gabor_pos
             gabor.draw()
 
-        self.make_title(self.get_text('welcome'))
-        self.make_text(instructions_text)
-        self.make_explorer()
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
 
@@ -142,17 +145,15 @@ class Experiment(object):
         self.win.saveMovieFrames(name)
 
     def show_inherited_instructions(self):
+        self.make_title(self.get_text('ancestor_instructions_title'))
         inherited = load_ancestor_instructions(self.get_var('inherit_from'))
-        self.make_title("Here are the instructions you found on the planet")
         self.make_text(inherited)
-        self.make_text("Press SPACE to continue", pos=(-400, 0))
         self.win.flip()
         event.waitKeys(['space'])
 
-    def show_instructions(self):
-        self.make_title('Are you ready to begin?')
-        num_quarries = 4
-        self.make_text('You will now travel to {} different quarries and collect {} gems at each one. Press SPACE to begin.'.format(num_quarries, self.n_trials_per_block))
+    def show_pre_test(self):
+        self.make_title(self.get_text('pre_test_title'))
+        self.make_text(self.get_text("pre_test"))
         self.make_explorer()
         self.win.flip()
         event.waitKeys(['space'])
@@ -166,9 +167,10 @@ class Experiment(object):
         typing = True
         is_cap = False
         message = ''
-        title = self.make_title("Enter your instructions for the next explorer")
-        descr = self.make_text("Describe anything that might help the next explorer select the most valuable gems.",
-        pos=(0, 200))
+
+        texts = self.get_text("instructions")
+        title = self.make_title(texts["title"])
+        descr = self.make_text(texts["descr"], pos=(0, 180))
         text_box = self.make_text('_', pos=(-250, 0), wrapWidth=500, alignHoriz='left')
 
         punct = dict(
@@ -176,12 +178,13 @@ class Experiment(object):
             comma = ',',
             apostrophe = "'",
         )
+
         while typing:
             keys = event.getKeys()
             if keys:
                 key = keys[0]
 
-                if key == 'return':  # bit.ly/pyglet-key-names
+                if key == 'escape':  # bit.ly/pyglet-key-names
                     typing = False
                     continue
                 elif key in ['lshift', 'rshift']:
@@ -202,7 +205,7 @@ class Experiment(object):
                     is_cap = False
 
                 message += key
-                text_box.setText(message)
+                text_box.setText(message + "_")
 
             title.draw()
             descr.draw()

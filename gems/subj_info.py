@@ -118,20 +118,24 @@ def verify_subj_info(subj_info):
     try:
         generation = int(subj_info["generation"])
     except ValueError:
-        return "Generation must be an integer"
+        return "generation must be an integer"
 
     if generation < 1:
-        return "Generation must be an integer greater than 1"
+        return "generation must be an integer greater than 1"
 
     ancestor_id = subj_info.get("inherit_from")
+
+    if generation == 1 and ancestor_id != "":
+        return "If generation is 1, inherit_from must be blank"
+
     if generation > 1:
         if not ancestor_id:
-            return "If Generation > 1, ancestor id must be provided"
+            return "If generation > 1, inherit_from must be provided"
 
         try:
             load_ancestor_instructions(ancestor_id)
         except IOError:
-            return "Ancestor instructions for '{}' not found".format(ancestor_id)
+            return "can't inherit from '{}': instructions not found".format(ancestor_id)
 
 
 def convert_condition_vars(subj_info):

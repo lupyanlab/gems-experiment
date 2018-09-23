@@ -1,19 +1,17 @@
 ---
-welcome: |
+welcome_title: |
   Welcome to Planet Teeb!
   You are here to collect precious gems.
-instructions: |
-  Congratulations! You have just arrived on Planet Teeb. You are a space explorer who has traveled here to collect precious gems, but you do not know which gems are more valuable than others.
+welcome_text: |
+  Congratulations! You are a space explorer who has just arrived on Planet Teeb. You are here to collect precious gems. Some examples of the gems found on Planet Teeb are shown below. One of these gems is worth more than the others. Your goal in this experiment is to learn which gems are worth more than the others.
 
   {generation_instructions}
-  After you have collected gems of your own, you will be asked to write your own instructions for the next explorer that lands on Planet Teeb.
-
-  Press the SPACEBAR to continue
+  Press the SPACEBAR to continue.
 generation_instructions:
-  generation_0: |
-    You are the first person on the planet, and there is no one to teach you which gems are more valuable than others. You have to learn yourself to decide which gems are the most valuable.
+  generation_1: |
+    You are the first person to ever set foot on Planet Teeb. There is no one who can teach you which gems are worth more than the others. You have to figure out on your own and through trial-and-error which gems are the most valuable.
   generation_N: |
-    After you arrive, you seek out a teacher to help you decide which gems are the most valuable.
+    You are not the first person to come to Planet Teeb looking for previous gems. When you arrive, you seek out someone to teach you which gems are worth more than others. On the next screen, you will receive instructions from a previous explorer who has learned through trial-and-error which gems are the most valuable.
 ancestor_instructions_title: |
   Instructions from the previous explorer
 ancestor_instructions: |
@@ -21,19 +19,21 @@ ancestor_instructions: |
 
   {ancestor_response}
 
-  Press SPACEBAR to continue
-test_title: Are you ready to collect gems?
-test: |
-  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. You will only learn the value of the gem you select, and not the values of the gems you did not select. Your goal is try to select the most valuable gem on each trial and get the highest total score.
+  Press SPACEBAR to continue.
+pre_test_title: Are you ready to collect gems?
+pre_test: |
+  Now you will strike out on your own and collect gems at 4 different quarries all over Planet Teeb. You will only learn the value of the gem you select, and not the values of the gems you do not select. Try to learn through trial-and-error which gems are the most valuable. Your goal is try to select the most valuable gem on each trial and get the highest total score.
+
+  After you have collected gems for a while, you will be asked to write instructions for the next explorer who arrives on Planet Teeb after you. As you collect gems, be thinking of what you could tell the next generation that would help them select the most valuable gems. Try different strategies for picking gems so that you can be the most helpful when leaving instructions for the next generation.
 
   If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: |
   You are finished at this quarry.
   On to the next one!
 break: |
-  You've finished collecting gems at this quarry. Please wait while your ship flies to the next quarry. Take this opportunity to relax your eyes and stretch.
+  You've finished collecting gems at this quarry. Please wait while your ship travels to the next quarry. Take this opportunity to relax your eyes and stretch.
 
-  When you get to the new quarry, you will likely encounter new gems you haven't seen before. Try to figure out which gems at this quarry are the most valuable.
+  When you get to the new quarry, you may encounter new gems you haven't seen before. Try to figure out which gems at this quarry are the most valuable.
 break_complete: Are you ready to continue? If so, press the SPACEBAR.
 end_title: |
   Your ship is full of gems and you are ready to fly home.
@@ -50,5 +50,8 @@ trial:
   summary_improve: This gem was worth {diff_from_prev_gem} more than your last one.
   summary_decrease: This gem was worth {diff_from_prev_gem} less than your last one.
   summary_same: This gem was worth the same price as your last one.
-
-survey: https://docs.google.com/forms/d/e/1FAIpQLSfv2owurYnTqVNKKsf7QAEu5Xn0kyGJ0rHPDYzmYZbyskBmNA/viewform?usp=pp_url&entry.967939331={subj_id}&entry.1651313797={computer}
+instructions:
+  title: Enter your instructions for the next explorer.
+  descr: |
+    Write down what you think makes some gems more valuable than others. Try to be as helpful as possible to someone who has never seen these gems before. Whatever you write will be presented to another participant in this experiment, so please use complete sentences. When you are satisfied with your answer, press the ESCAPE key.
+survey: https://docs.google.com/forms/d/e/1FAIpQLSdgLir11KOgmfFNEDt6Y9nNrtG_c9YZGjBjh5JQnj3BTGaigw/viewform?usp=pp_url&entry.1047589789={subj_id}&entry.644760623={computer}
