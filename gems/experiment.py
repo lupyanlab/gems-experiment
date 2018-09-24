@@ -251,7 +251,9 @@ class Experiment(object):
             self.total_score = self.landscape.score(start_pos)
 
             block_data = dict(
-                landscape_ix=landscape_ix+1,
+                generation=self.get_var('generation'),
+                inherit_from=self.get_var('inherit_from'),
+                block_ix=landscape_ix+1,
                 landscape_name=self.landscape.__class__.__name__,
                 starting_pos=pos_to_str(self.pos),
                 starting_score=self.total_score

@@ -13,8 +13,10 @@ for expected_dir in [DATA_DIR, INSTRUCTIONS_DIR, LANDSCAPE_FILES, GABORS_DIR]:
 
 data_columns = [
     'subj_id', 'date', 'computer', 'experimenter',
-    'generation', 'sight_radius', 'n_gabors',
-    'block_ix', 'trial', 'pos', 'stims',
+    'generation', 'inherit_from',
+    'sight_radius', 'n_gabors',
+    'block_ix', 'landscape_name', 'starting_pos', 'starting_score',
+    'trial', 'pos', 'stims',
     'selected', 'rt', 'score', 'delta',
     'exp_time'
 ]
