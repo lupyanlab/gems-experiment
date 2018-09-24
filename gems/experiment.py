@@ -40,7 +40,7 @@ class Experiment(object):
     total_score = 0
     sight_radius = 10  # range of sight on the grid in the landscape
     pos = (0, 0)       # initial grid position on the landscape
-    n_trials_per_block = 30
+    n_trials_per_block = 40
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
