@@ -109,6 +109,7 @@ class Experiment(object):
         self.show_welcome()
         if self.get_var('generation') > 1:
             self.show_inherited_instructions()
+        self.show_foreshadow()
         self.show_pre_test()
         self.run_test_trials()
         self.show_end()
@@ -148,6 +149,13 @@ class Experiment(object):
         self.make_title(self.get_text('ancestor_instructions_title'))
         inherited = load_ancestor_instructions(self.get_var('inherit_from'))
         self.make_text(inherited)
+        self.win.flip()
+        event.waitKeys(['space'])
+
+    def show_foreshadow(self):
+        self.make_title(self.get_text("foreshadow_title"))
+        self.make_text(self.get_text("foreshadow"))
+        self.make_explorer()
         self.win.flip()
         event.waitKeys(['space'])
 

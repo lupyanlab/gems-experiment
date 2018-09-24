@@ -3,30 +3,32 @@ welcome_title: |
   Welcome to Planet Teeb!
   You are here to collect precious gems.
 welcome_text: |
-  Congratulations! You are a space explorer who has just arrived on Planet Teeb. You are here to collect precious gems. Some examples of the gems found on Planet Teeb are shown below. One of these gems is worth more than the others. Your goal in this experiment is to learn which gems are worth more than the others.
+  Congratulations! You are a space explorer who has just arrived on Planet Teeb. You are here to collect precious gems. Some examples of the gems found on Planet Teeb are shown below. One of these gems is worth more than the others. Your goal in this experiment is to figure out which gems are more valuable than others.
 
   {generation_instructions}
   Press the SPACEBAR to continue.
 generation_instructions:
   generation_1: |
-    You are the first person to ever set foot on Planet Teeb. There is no one who can teach you which gems are worth more than the others. You have to figure out on your own and through trial-and-error which gems are the most valuable.
+    You are the first person to ever set foot on Planet Teeb. There is no one who can teach you which gems are worth more than the others. You have to figure out on your own through trial-and-error which gems are the most valuable.
   generation_N: |
-    You are not the first person to come to Planet Teeb looking for previous gems. When you arrive, you seek out someone to teach you which gems are worth more than others. On the next screen, you will receive instructions from a previous explorer who has learned through trial-and-error which gems are the most valuable.
+    You are not the first person to come to Planet Teeb looking for previous gems. On the next screen, you will receive instructions from a previous explorer who has learned through trial-and-error which gems are the most valuable.
 ancestor_instructions_title: |
   Instructions from the previous explorer
 ancestor_instructions: |
-  Here are the instructions you received from the explorer who was here before you. Read these instructions carefully as they will help you select the most valuable gems.
+  Here are the instructions you receive from the explorer who was on Planet Teeb before you. Read these instructions carefully as they will help you select the most valuable gems in the experiment.
 
   {ancestor_response}
+  After you have read these instructions, press the SPACEBAR to continue.
+foreshadow_title: Think about your strategy
+foreshadow: |
+  After you have collected gems for a while, you will be asked to write down how to select the most valuable gems for the next explorer who arrives on Planet Teeb. As you are collecting gems, be thinking of what you could tell another explorer that would help them select the most valuable gems on each trial. Try testing different strategies for picking precious gems so that you can be the most helpful when leaving instructions for the next generation.
 
-  Press SPACEBAR to continue.
+  Press the SPACEBAR to continue.
 pre_test_title: Are you ready to collect gems?
 pre_test: |
-  Now you will strike out on your own and collect gems at 4 different quarries all over Planet Teeb. You will only learn the value of the gem you select, and not the values of the gems you do not select. Try to learn through trial-and-error which gems are the most valuable. Your goal is try to select the most valuable gem on each trial and get the highest total score.
+  To collect precious gems, you will be shown 6 gems at a time, and select one of them that you think is most valuable. You will only learn the value of the gem you select, and not the values of the gems you do not select. Your goal is try to figure out how to select the most valuable gem on each trial so that you get the highest total score in the game.
 
-  After you have collected gems for a while, you will be asked to write instructions for the next explorer who arrives on Planet Teeb after you. As you collect gems, be thinking of what you could tell the next generation that would help them select the most valuable gems. Try different strategies for picking gems so that you can be the most helpful when leaving instructions for the next generation.
-
-  If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
+  Now you will strike out on your own and collect gems at 4 quarries all over Planet Teeb. If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
 break_title: |
   You are finished at this quarry.
   On to the next one!
