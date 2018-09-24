@@ -13,11 +13,11 @@ def show_texts(ctx, generation=1):
     experiment = Experiment(generation=generation)
     experiment.use_landscape('SimpleHill')
     experiment.show_welcome()
-    # experiment.show_training()
-    # experiment.show_test()
-    # experiment.show_break()
-    # experiment.show_end()
-    # experiment.quit()
+    experiment.show_example_trial()
+    experiment.show_foreshadow()
+    experiment.show_pre_test()
+    experiment.show_break()
+    experiment.show_end()
 
 
 @task

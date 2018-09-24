@@ -107,6 +107,7 @@ class Experiment(object):
     def run(self):
         self.exp_timer.reset()
         self.show_welcome()
+        self.show_example_trial()
         if self.get_var('generation') > 1:
             self.show_inherited_instructions()
         self.show_foreshadow()
@@ -141,9 +142,16 @@ class Experiment(object):
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
 
-    def save_screenshot(self, name):
-        self.win.getMovieFrame()
-        self.win.saveMovieFrames(name)
+    def show_example_trial(self):
+        gabors = self.sample_gabors()
+        self.trial_header.text = self.get_text('example_trial_title')
+        self.make_text(self.get_text("example_trial"), pos=(0,350))
+        self.trial_header.draw()
+        self.fixation.draw()
+        for gabor in gabors.values():
+            gabor.draw()
+        self.win.flip()
+        event.waitKeys(['space'])
 
     def show_inherited_instructions(self):
         self.make_title(self.get_text('ancestor_instructions_title'))
@@ -180,6 +188,7 @@ class Experiment(object):
         title = self.make_title(texts["title"])
         descr = self.make_text(texts["descr"], pos=(0, 180))
         text_box = self.make_text('_', pos=(-250, 0), wrapWidth=500, alignHoriz='left')
+        error = self.make_text("", pos=(0, -180), color="red")
 
         punct = dict(
             period = '.',
@@ -193,8 +202,12 @@ class Experiment(object):
                 key = keys[0]
 
                 if key == 'escape':  # bit.ly/pyglet-key-names
-                    typing = False
-                    continue
+                    if len(message) < 100:
+                        error.setText(texts["too_short"])
+                        continue
+                    else:
+                        typing = False
+                        continue
                 elif key in ['lshift', 'rshift']:
                     is_cap = True
                     continue
@@ -212,12 +225,14 @@ class Experiment(object):
                     key = key.upper()
                     is_cap = False
 
+                error.setText("")
                 message += key
                 text_box.setText(message + "_")
 
             title.draw()
             descr.draw()
             text_box.draw()
+            error.draw()
             self.win.flip()
 
         return message
@@ -577,3 +592,7 @@ class Experiment(object):
     def use_landscape(self, name):
         self.landscape = getattr(landscape, name)()
         self.landscape.grating_stim_kwargs.update(self.grating_stim_kwargs)
+
+    def save_screenshot(self, name):
+        self.win.getMovieFrame()
+        self.win.saveMovieFrames(name)
