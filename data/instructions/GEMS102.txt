@@ -1,0 +1,1 @@
+It appears that in Quarry 1, you should never click on the same gem 2 times in a row. This leads to negative points. Also, avoid clicking adjacent gems, which also seems to lead to negative points. For Quarry 2, it seems like clicking on gems that are one over from each other, skipping the adjacent, leads to positive points.
