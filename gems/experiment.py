@@ -156,7 +156,8 @@ class Experiment(object):
     def show_inherited_instructions(self):
         self.make_title(self.get_text('ancestor_instructions_title'))
         inherited = load_ancestor_instructions(self.get_var('inherit_from'))
-        self.make_text(inherited)
+        body = self.get_text("ancestor_instructions").format(ancestor_response=inherited)
+        self.make_text(body)
         self.win.flip()
         event.waitKeys(['space'])
 

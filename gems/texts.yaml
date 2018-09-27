@@ -23,7 +23,8 @@ ancestor_instructions: |
   Here are the instructions from an explorer who was on Planet Teeb before you. Read these instructions carefully as they will help you select the most valuable gems in the experiment.
 
   {ancestor_response}
-  After you have read the instructions, press the SPACEBAR to continue.
+
+  After you have read the instructions above, press the SPACEBAR to continue.
 foreshadow_title: Think about your strategy
 foreshadow: |
   After you have collected gems for a while, you will be asked to write down how to select the most valuable gems for the next explorer who arrives on Planet Teeb. As you are collecting gems, be thinking of what you could tell another explorer that would help them select the most valuable gems on each trial. Try testing different strategies for picking precious gems so that you can be the most helpful when leaving instructions for the next generation.
