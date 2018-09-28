@@ -12,7 +12,7 @@ for expected_dir in [DATA_DIR, INSTRUCTIONS_DIR, LANDSCAPE_FILES, GABORS_DIR]:
         mkdir(expected_dir)
 
 data_columns = [
-    'subj_id', 'date', 'computer', 'experimenter',
+    'subj_id', 'date', 'computer', 'experimenter', 'version',
     'generation', 'inherit_from',
     'sight_radius', 'n_gabors',
     'block_ix', 'landscape_name', 'starting_pos', 'starting_score',

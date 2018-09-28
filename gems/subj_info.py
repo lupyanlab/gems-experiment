@@ -9,7 +9,7 @@ from .config import DATA_DIR
 from .inherited_instructions import load_ancestor_instructions
 
 
-def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
+def get_subj_info(gui_yaml, version=None, check_exists=None, verify=None, save_order=False):
     """Create a psychopy.gui from a yaml config file.
 
     The first time the experiment is run, a pickle of that subject's settings
@@ -19,6 +19,7 @@ def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
     Parameters
     ----------
     gui_yaml: str, Path to config file in yaml format.
+    version: str, Experiment version
     check_exists: function, Computes a data file path from the gui data, and
         checks for its existence. If the file exists, an error is displayed.
     verify: function, Evaluates the inputs from the gui. If an input doesn't
@@ -80,6 +81,10 @@ def get_subj_info(gui_yaml, check_exists=None, verify=None, save_order=False):
     gui_data['computer'] = socket.gethostname()
 
     fixed_fields = ['date', 'computer']
+
+    if version is not None:
+        gui_data['version'] = version
+        fixed_fields.append('version')
 
     while True:
         # Bring up the dialogue

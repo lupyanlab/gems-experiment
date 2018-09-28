@@ -10,10 +10,13 @@ from psychopy import visual, core, event
 
 from . import landscape
 from .config import pkg_root, data_columns, INSTRUCTIONS_DIR
-from .display import create_radial_positions
+from .display import create_radial_positions, create_line_positions
 from .util import pos_to_str, pos_list_to_str
 from .subj_info import get_subj_info, make_output_filepath, check_output_filepath, convert_condition_vars, verify_subj_info
 from .inherited_instructions import load_ancestor_instructions
+
+
+EXPERIMENT_VERSION = '1.2'
 
 
 class Experiment(object):
@@ -22,7 +25,7 @@ class Experiment(object):
     response_text = 'Press SPACEBAR to continue.'
 
     # Wait times in seconds ----
-    duration_fix = 0.5
+    duration_fix = 1
     duration_feedback = 2
     duration_iti = 1.0
     duration_break_minimum = 5
@@ -34,6 +37,8 @@ class Experiment(object):
     # Stimulus presentation ----
     gabor_size = 100    # in pix
     n_gabors = 6        # gabors per trial
+    gabor_y_pos = 75
+    prev_gabor_y_pos = -150
     stim_radius = 240   # pix between fix and center of grating stim
 
     # Players ----
@@ -50,6 +55,7 @@ class Experiment(object):
     def from_gui(cls, gui_yaml):
         """Create an experiment after obtaining condition vars from a GUI."""
         subj_info = get_subj_info(gui_yaml,
+            version=EXPERIMENT_VERSION,
             check_exists=check_output_filepath,
             verify=verify_subj_info,
             save_order=True)
@@ -62,7 +68,7 @@ class Experiment(object):
         self._cache = {}
 
         self.stim_positions = \
-            create_radial_positions(self.n_gabors, radius=self.stim_radius)
+            create_line_positions(self.n_gabors, screen_width=self.win.size[0]-self.gabor_size, y_pos=self.gabor_y_pos)
 
         self.trial_header = self.make_text('',
             draw=False,
@@ -94,7 +100,7 @@ class Experiment(object):
             color='blue',
             height=30)
 
-        self.fixation = self.make_text('+', draw=False, height=30, pos=(0,0))
+        self.prev_gem_text = self.make_text('Here is the gem you selected last.', draw=False, pos=(0,self.prev_gabor_y_pos-self.gabor_size))
         self.mouse = event.Mouse()
         self.use_landscape('SimpleHill')
         self.exp_timer = core.Clock()
@@ -147,7 +153,7 @@ class Experiment(object):
         self.trial_header.text = self.get_text('example_trial_title')
         self.make_text(self.get_text("example_trial"), pos=(0,350))
         self.trial_header.draw()
-        self.fixation.draw()
+        # self.fixation.draw()
         for gabor in gabors.values():
             gabor.draw()
         self.win.flip()
@@ -291,6 +297,7 @@ class Experiment(object):
             date = self.get_var('date'),
             computer = self.get_var('computer'),
             experimenter = self.get_var('experimenter'),
+            version=self.get_var('version'),
             sight_radius = self.sight_radius,
             n_gabors = self.n_gabors,
             pos = pos_to_str(self.pos)
@@ -307,19 +314,29 @@ class Experiment(object):
         self.landscape_title.text = landscape_title
 
         # Begin trial presentation ----
-        self.fixation.draw()
+        #self.fixation.draw()
+        prev_gem = None
         self.landscape_title.draw()
         if trial > 0:
+            self.prev_gem_text.draw()
+            prev_gem = self.landscape.get_grating_stim(self.pos)
+            prev_gem.pos = (0, self.prev_gabor_y_pos)
+            prev_gem.draw()
             self.draw_score()
+            self.trial_header.text = self.get_trial_text('instructions_N')
+        else:
+            # first trial in block
+            self.trial_header.text = self.get_trial_text('instructions_0')
         self.win.flip()
         core.wait(self.duration_fix)
 
-        self.trial_header.text = self.get_trial_text('instructions')
         self.trial_header.draw()
         self.landscape_title.draw()
         if trial > 0:
+            prev_gem.draw()
+            self.prev_gem_text.draw()
             self.draw_score()
-        self.fixation.draw()
+        # self.fixation.draw()
         for gabor in gabors.values():
             gabor.draw()
         self.win.flip()
