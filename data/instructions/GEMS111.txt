@@ -1,0 +1,1 @@
+I thought that more lines meant more valuable I also found there was a pattern where I should select a gem with more lines and more rotated clockwise than the gem I had selected previously, however, this theory was not always correct and frustrated me. 

@@ -1,0 +1,1 @@
+The gems that have white borders on the right and left sides of the circle are more likely to be a postive value than circles that have black borders.   
