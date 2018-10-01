@@ -35,11 +35,11 @@ class Experiment(object):
     win_color = (.6, .6, .6)
 
     # Stimulus presentation ----
-    gabor_size = 100    # in pix
+    gabor_size = 120    # in pix
     n_gabors = 6        # gabors per trial
     gabor_y_pos = 75
-    prev_gabor_y_pos = -150
-    stim_radius = 240   # pix between fix and center of grating stim
+    prev_gabor_y_pos = -175
+    stim_radius = 200   # pix between fix and center of grating stim
 
     # Players ----
     total_score = 0
@@ -68,11 +68,11 @@ class Experiment(object):
         self._cache = {}
 
         self.stim_positions = \
-            create_line_positions(self.n_gabors, screen_width=self.win.size[0]-self.gabor_size, y_pos=self.gabor_y_pos)
+            create_line_positions(self.n_gabors, screen_width=self.win.size[0]-(2*self.gabor_size), y_pos=self.gabor_y_pos)
 
         self.trial_header = self.make_text('',
             draw=False,
-            pos=(0, self.stim_radius*2),
+            pos=(0, self.stim_radius*1.25),
             alignVert='top',
             height=30,
             wrapWidth=self.win.size[0])
@@ -150,8 +150,14 @@ class Experiment(object):
 
     def show_example_trial(self):
         gabors = self.sample_gabors()
-        self.trial_header.text = self.get_text('example_trial_title')
-        self.make_text(self.get_text("example_trial"), pos=(0,350))
+        self.make_text(
+			self.get_text('example_trial_title'),
+			pos=(0, 2*self.stim_radius),
+            alignVert='top',
+            height=30,
+            wrapWidth=self.win.size[0]
+		)
+        self.make_text(self.get_text("example_trial"), pos=(0,250))
         self.trial_header.draw()
         # self.fixation.draw()
         for gabor in gabors.values():
