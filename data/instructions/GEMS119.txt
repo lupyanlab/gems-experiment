@@ -1,0 +1,1 @@
+Gems that are more valuable have a greater frequency of white and black lines and those lines are thinner than the lines on less valuable gems.A gem also increases in value the closer its lines get to being about 15 degrees counterclockwise of horizontal. 

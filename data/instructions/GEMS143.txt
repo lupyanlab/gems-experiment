@@ -1,0 +1,1 @@
+There seems to be a number of lines which yields points more often than not. I think this was around 8.  I did notice that the first gem is worth 22 points, and that one only has five lines. I couldn't find a pattern with orientation or color. I had thought at first that the farther clockwise they go, the more worth they would have, but this proved false.

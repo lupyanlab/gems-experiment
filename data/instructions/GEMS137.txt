@@ -1,0 +1,1 @@
+I think gems with a higher number of lines are more valuable than gems with lower numbers. I'm not completely sure what the direction of the lines has to do with the value, but I think choosing ones close to the previously selected valuable gem will end up being the next most valuable gem.

@@ -1,0 +1,1 @@
+The value of gems depends on the orientation of the lines on the gems. You want it to be as close to 180 degrees or horizontal as possible

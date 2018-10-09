@@ -1,0 +1,1 @@
+Gems are more valuable as the lines become more abundant and 'zoomed out' in the circle. Also, the circle of lines should be rotating clockwise each time to be more valuable. 

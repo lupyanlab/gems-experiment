@@ -1,0 +1,1 @@
+It seemed that at the start the gems with lines that were more horizontal than verticle were more valuable. Also the gems with more lines seemed to be more valuable. However, it also seemed that as I selected they same style of gems mulitple times in a row, they would lose their value and sometimes even become negative so I recommend switching styles of gems if this happens. 

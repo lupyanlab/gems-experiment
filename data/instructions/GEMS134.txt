@@ -1,0 +1,1 @@
+As you continue throughout the collection process, choosing the gems with more and more lines givs you points as well as the gems turning clockwise. He gems will increase in the number of lines and once the gems have turned half way going clockwise, they turn counterclockwise back to their original position, I believe.
