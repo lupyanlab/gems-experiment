@@ -43,9 +43,9 @@ class RandomSimulation(Experiment):
         self.total_score = new_gem_score  # update total score
 
         trial_data = self.make_trial_data(
-            pos=prev_grid_pos,
+            pos=pos_to_str(prev_grid_pos),
             stims=pos_list_to_str(gabors),
-            selected=grid_pos,
+            selected=pos_to_str(grid_pos),
             score=new_gem_score,
             delta=diff_from_prev_gem
         )
