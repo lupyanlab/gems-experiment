@@ -20,7 +20,8 @@ class RandomSimulation(Experiment):
         block_data = dict(
             landscape_name=self.landscape.__class__.__name__,
             starting_pos=pos_to_str(self.pos),
-            starting_score=self.total_score
+            starting_score=self.total_score,
+            block_ix=1
         )
 
         for trial in range(self.n_trials_per_block):
@@ -47,7 +48,7 @@ class RandomSimulation(Experiment):
             stims=pos_list_to_str(gabors),
             selected=pos_to_str(grid_pos),
             score=new_gem_score,
-            delta=diff_from_prev_gem
+            delta=diff_from_prev_gem,
         )
         return trial_data
 
