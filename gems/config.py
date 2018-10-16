@@ -20,3 +20,12 @@ data_columns = [
     'selected', 'rt', 'score', 'delta',
     'exp_time'
 ]
+
+simulation_data_columns = [
+    'simulation_type',
+    'subj_id',
+    'sight_radius', 'n_gabors',
+    'landscape_name', 'starting_pos', 'starting_score',
+    'trial', 'pos', 'stims',
+    'selected', 'score', 'delta'
+]
