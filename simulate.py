@@ -17,7 +17,10 @@ def simulate_random(**kwargs):
 
 
 def simulate_optimal(**kwargs):
-    pass
+    for seed in range(kwargs["seeds"]):
+        output = os.path.join(simulations_dir, "optimal-seed-{seed}.csv".format(seed=seed))
+        simulation = gems.OptimalSimulation(seed=seed, output=output)
+        simulation.run()
 
 
 simulators = dict(random=simulate_random, optimal=simulate_optimal)

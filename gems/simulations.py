@@ -3,7 +3,7 @@ import numpy
 from gems.experiment import *
 from gems.config import simulation_data_columns
 
-class RandomSimulation(Experiment):
+class Simulation(Experiment):
     def __init__(self, seed, output):
         self.seed = seed
         self.random = numpy.random.RandomState(seed)
@@ -32,7 +32,7 @@ class RandomSimulation(Experiment):
 
     def run_trial(self):
         gabors = self.landscape.sample_neighborhood(self.n_gabors, self.pos, self.sight_radius)
-        grid_pos = gabors[self.random.choice(range(len(gabors)))]
+        grid_pos = self.simulate_choice(gabors)
 
         # Compare selected gem to prev trial gem
         prev_gem_score = self.landscape.score(self.pos)
@@ -62,3 +62,22 @@ class RandomSimulation(Experiment):
         )
         trial_data.update(kwargs)
         return trial_data
+
+
+    def simulate_choice(self, gabors):
+        raise NotImplementedError()
+
+class RandomSimulation(Simulation):
+    def simulate_choice(self, gabors):
+        return gabors[self.random.choice(range(len(gabors)))]
+
+class OptimalSimulation(Simulation):
+    def simulate_choice(self, gabors):
+        best_gem = gabors[0]
+        best_score = self.landscape.get_score(gabors[0])
+        for pos in sorted(gabors[1:]):
+            cur_score = self.landscape.get_score(pos)
+            if cur_score > best_score:
+                best_gem = pos
+                best_score = cur_score
+        return best_gem
