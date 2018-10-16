@@ -55,7 +55,7 @@ class Simulation(Experiment):
     def make_trial_data(self, **kwargs):
         trial_data = dict(
             subj_id = "random_robot_{}".format(self.seed),
-            simulation_type = "random",
+            simulation_type = self.simulation_type,
             sight_radius = self.sight_radius,
             n_gabors = self.n_gabors,
             pos = pos_to_str(self.pos)
@@ -68,10 +68,12 @@ class Simulation(Experiment):
         raise NotImplementedError()
 
 class RandomSimulation(Simulation):
+    simulation_type = "random"
     def simulate_choice(self, gabors):
         return gabors[self.random.choice(range(len(gabors)))]
 
 class OptimalSimulation(Simulation):
+    simulation_type = "optimal"
     def simulate_choice(self, gabors):
         best_gem = gabors[0]
         best_score = self.landscape.get_score(gabors[0])
