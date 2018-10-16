@@ -1,0 +1,1 @@
+I think that either the number of black diagonal lines has to do something with the value of the gems. The more black lines, the more valuable. When all gems had the same number of black lines, then I either guessed the left most gem, or I looked for a gem that was an outlier in angle compared to the rest of the gem.

@@ -1,0 +1,1 @@
+Select the gem with the least ammout of black lines in it. Also slect the gem that is the most off center.

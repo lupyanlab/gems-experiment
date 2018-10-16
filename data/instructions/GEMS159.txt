@@ -1,0 +1,1 @@
+When you are picking a gem , you should start by picking one of the middle gems. The next gem you pick is more valuable is the 1st gem you picked that's the left or right side of the 1st gem picked. Pick another gem that's in the middle of the group of gems. Then you pick a gem that is left or right of one of the middle gems. 
