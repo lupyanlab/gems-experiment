@@ -1,0 +1,1 @@
+actually, i had no idea. maybe find the different one in all given choices.when i try to find the one had most number of lines, it turned out to be run. then i tried to find the one had lines more than before, it turned out to be wrong. so, i totally had no idea to find the most vauable gem.

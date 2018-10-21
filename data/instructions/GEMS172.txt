@@ -1,0 +1,1 @@
+try to choose the gems in the middle when you start. even though the location of gems doesn't affect their value, it's helpful to start from middle.

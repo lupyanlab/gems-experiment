@@ -1,0 +1,1 @@
+To determine the value of a gem, use the thickness and spacing of the lines. Gems that are more valuable will have more black lines which will be thicker than the white lines. The more valuable the gem is, the more defined the lines will be as well, i.e. not blurry. 

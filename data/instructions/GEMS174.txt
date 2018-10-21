@@ -1,0 +1,1 @@
+When you begin the gems with the most lines hold the greatest value. If you get one incorrect, the value of the gems changes and the ones who hold the most value have less lines than the previously chosen gem.
