@@ -61,13 +61,13 @@ class Experiment(object):
             save_order=True)
         subj_info = convert_condition_vars(subj_info)
 
-        self.data_columns = data_columns
         return cls(**subj_info)
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
         self.texts = yaml.load(open(path.join(pkg_root, 'texts.yaml')))
         self._cache = {}
+        self.data_columns = data_columns
 
         self.stim_positions = \
             create_line_positions(self.n_gabors, screen_width=self.win.size[0]-(3*self.gabor_size), y_pos=self.gabor_y_pos)
@@ -201,7 +201,7 @@ class Experiment(object):
 
         texts = self.get_text("instructions")
         title = self.make_title(texts["title"])
-        descr = self.make_text(texts["descr"], pos=(0, 180))
+        descr = self.make_text(texts["descr"], pos=(0, 170))
         text_box = self.make_text('_', pos=(-250, 0), wrapWidth=500, alignHoriz='left')
         error = self.make_text("", pos=(0, -180), color="red")
 
