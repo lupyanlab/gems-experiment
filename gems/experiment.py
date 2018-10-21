@@ -16,7 +16,7 @@ from .subj_info import get_subj_info, make_output_filepath, check_output_filepat
 from .inherited_instructions import load_ancestor_instructions
 
 
-EXPERIMENT_VERSION = '1.2'
+EXPERIMENT_VERSION = '1.3'
 
 
 class Experiment(object):
@@ -45,7 +45,7 @@ class Experiment(object):
     total_score = 0
     sight_radius = 10  # range of sight on the grid in the landscape
     pos = (0, 0)       # initial grid position on the landscape
-    n_trials_per_block = 40
+    n_trials_per_block = 80
 
     # Defaults ----
     text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
@@ -70,7 +70,7 @@ class Experiment(object):
         self._cache = {}
 
         self.stim_positions = \
-            create_line_positions(self.n_gabors, screen_width=self.win.size[0]-(2*self.gabor_size), y_pos=self.gabor_y_pos)
+            create_line_positions(self.n_gabors, screen_width=self.win.size[0]-(3*self.gabor_size), y_pos=self.gabor_y_pos)
 
         self.trial_header = self.make_text('',
             draw=False,
@@ -256,10 +256,9 @@ class Experiment(object):
 
         self.use_landscape('SimpleHill')
 
-        for landscape_ix, start_pos in enumerate([(0,0), (0,0), (0,0), (0,0)]):
-            if landscape_ix == 2:
+        for landscape_ix, start_pos in enumerate([(0,0), (0,0)]):
+            if landscape_ix == 1:
                 self.record_instructions()
-            elif landscape_ix > 0:
                 self.show_break()
 
             self.pos = start_pos

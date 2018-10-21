@@ -14,7 +14,7 @@ generation_instructions:
     You are not the first person to come to Planet Teeb looking for precious gems. On a later screen, you will receive instructions from a previous explorer who has learned through trial-and-error which gems are the most valuable.
 example_trial_title: Here is how you will collect gems
 example_trial: |
-  To collect precious gems, you will be presented 6 gems at a time, as shown below. You will select one of them that you think is most valuable, and you will learn the value of the gem you select. Your goal is to try to pick more and more valuable gems on each trial so that you get the highest total score in the game. Note that the value of each gem is determined by how it looks, not by where is it presented on the screen.
+  To collect precious gems, you will be presented 6 gems at a time, as shown below. You will select one of them that you think is most valuable, and you will learn the value of the gem you select. Your goal is to try to pick more and more valuable gems on each trial so that you get the highest total score in the game. The most valuable gems on Planet Teeb are worth 100 bitrocks. Note that the value of each gem is determined by how it looks, not by where is it presented on the screen.
 
   Press the SPACEBAR to continue.
 ancestor_instructions_title: |
@@ -32,14 +32,13 @@ foreshadow: |
   Press the SPACEBAR to continue.
 pre_test_title: Are you ready to collect gems?
 pre_test: |
-  Now you are ready to strike out on your own and collect gems at 4 quarries all over Planet Teeb. If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
+  Now you are ready to strike out on your own and collect gems on Planet Teeb. If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems, press the SPACEBAR.
 break_title: |
   You are finished at this quarry.
-  On to the next one!
 break: |
   You've finished collecting gems at this quarry. Please wait while your ship travels to the next quarry. Take this opportunity to relax your eyes and stretch.
 
-  When you get to the new quarry, you may encounter new gems you haven't seen before. Try to figure out which gems at this quarry are the most valuable.
+  When you get to the new quarry, try to apply what you've learned about what makes the gems valuable to help you get the highest score.
 break_complete: Are you ready to continue? If so, press the SPACEBAR.
 end_title: |
   Your ship is full of gems and you are ready to fly home.
