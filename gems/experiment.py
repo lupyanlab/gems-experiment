@@ -60,6 +60,8 @@ class Experiment(object):
             verify=verify_subj_info,
             save_order=True)
         subj_info = convert_condition_vars(subj_info)
+
+        self.data_columns = data_columns
         return cls(**subj_info)
 
     def __init__(self, **condition_vars):
@@ -286,7 +288,7 @@ class Experiment(object):
         webbrowser.open(self.prefilled_survey_url)
 
     def sample_gabors(self):
-        """Sample gabors in a certain radius and place them on the screen.
+        """Sample gabors in a certain radius and assign them positions on the screen.
 
         Returns a dict with landscape position keys and GratingStim values.
         """
@@ -567,13 +569,13 @@ class Experiment(object):
         self._cache['output'] = open(self.condition_vars['filename'], 'w', 1)
 
         # Write CSV header
-        self.write_line(data_columns)
+        self.write_line(self.data_columns)
 
         return self._cache['output']
 
     def write_trial(self, trial_data):
         trial_strings = []
-        for col_name in data_columns:
+        for col_name in self.data_columns:
             datum = trial_data.get(col_name, '')
             trial_strings.append(str(datum))
         self.write_line(trial_strings)
