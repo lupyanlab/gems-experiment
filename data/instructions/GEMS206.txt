@@ -1,0 +1,1 @@
+Try to pick the gem that is most similar to the last gem you picked. Also, choose the gem that that has a medium sized line and the one with the most vertical lines. 

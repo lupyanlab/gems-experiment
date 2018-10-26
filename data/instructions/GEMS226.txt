@@ -1,0 +1,1 @@
+find the gem that is wider for each line. the lines for each valuable gems all go in the same directon. the line tend to be more and more condense as value increase, and the value of the next gem increase as the lines of the last gem go up a little bit.

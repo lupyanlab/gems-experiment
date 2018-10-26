@@ -1,0 +1,1 @@
+instead of just trying on random gem i think it is more helpful to stick to one type of gem and try to find out the pattern of the score change

@@ -1,0 +1,1 @@
+I do not kno how the points operate, but it appears that if you click ones with thicker lines, then the next set will also have thicker lines and vice versa with smaller lines.

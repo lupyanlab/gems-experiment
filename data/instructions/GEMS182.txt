@@ -1,0 +1,1 @@
+For certain gems, the one's that have the most lines are more valuable than the others generally. It's very hard to tell the value of gems after so many lines.

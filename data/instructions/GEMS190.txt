@@ -1,0 +1,1 @@
+The gems that have blurry lines are less valuable. Gems with thinner lines are more valuable. Gems whose lines are horizontal are less valuable. Finding gems that look like the previous gem will either get you zero points or positive points.

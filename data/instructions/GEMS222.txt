@@ -1,0 +1,1 @@
+I'm not super positive but I think what makes certain gems more valuable than others is determined by where they land on the in the sequence. The pattern shifts every other gem and shifts one step to the right each time. Overall, I think that sequencing and left to right movement has something to do with how gems are arranged. 

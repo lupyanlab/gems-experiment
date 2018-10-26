@@ -1,0 +1,1 @@
+Gem stones are more valuable when the stripes are closest to horizontal, or closer to horizontal than the last chosen gem.

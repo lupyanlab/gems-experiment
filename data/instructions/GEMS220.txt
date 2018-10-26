@@ -1,0 +1,1 @@
+select gems that have less number of lines and and have a slope that increases going left to right. If the extremes of the pattern ends in white, or white with slight hint of black, they may be worth value

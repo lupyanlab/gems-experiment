@@ -1,0 +1,1 @@
+It took me a while to find a pattern, but what I found is that a gem becomes more valuable when it is rotated clockwise. To clairfy, when the bars more and more to the right. Howeve, I found that when it got to the center, it went the other way, so counterclockwise. 

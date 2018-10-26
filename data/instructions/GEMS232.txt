@@ -1,0 +1,1 @@
+The gems with more lines on them seem to be more valuable. When a gem is slightly tilted to the left, gems with more tilt in that direction seem to be more valuable as well.
