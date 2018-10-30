@@ -104,13 +104,14 @@ class Experiment(object):
 
         self.prev_gem_text = self.make_text('Here is the gem you selected last.', draw=False, pos=(0,self.prev_gabor_y_pos-self.gabor_size))
         self.mouse = event.Mouse()
-        self.use_landscape('SimpleHill')
         self.exp_timer = core.Clock()
 
         try:
             self.prefilled_survey_url = self.get_text('survey').format(**self.condition_vars)
         except KeyError:
             self.prefilled_survey_url = self.get_text('survey').format(subj_id='', computer='')
+
+        self.use_landscape('SimpleHill')
 
     def run(self):
         self.exp_timer.reset()
@@ -254,7 +255,7 @@ class Experiment(object):
 
     def run_test_trials(self):
 
-        self.use_landscape('SimpleHill')
+        self.use_landscape(self.get_var("landscape"))
 
         for landscape_ix, start_pos in enumerate([(0,0), (0,0)]):
             if landscape_ix == 1:

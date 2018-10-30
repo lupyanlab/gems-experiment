@@ -12,6 +12,10 @@
   prompt: subj_id to inherit from
   default: ""
 4:
+  name: landscape
+  prompt: name of landscape
+  default: SimpleHill
+5:
   name: experimenter
   prompt: Experimenter initials
   default: XXX

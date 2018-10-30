@@ -5,8 +5,9 @@ from os import path
 import yaml
 from psychopy import gui, data, core
 
-from .config import DATA_DIR
-from .inherited_instructions import load_ancestor_instructions
+from gems import landscape
+from gems.config import DATA_DIR
+from gems.inherited_instructions import load_ancestor_instructions
 
 
 def get_subj_info(gui_yaml, version=None, check_exists=None, verify=None, save_order=False):
@@ -141,6 +142,16 @@ def verify_subj_info(subj_info):
             load_ancestor_instructions(ancestor_id)
         except IOError:
             return "can't inherit from '{}': instructions not found".format(ancestor_id)
+
+    landscape_name = subj_info["landscape"]
+    try:
+        getattr(landscape, landscape_name)
+    except AttributeError:
+        return "landscape {!r} not found. Try one of {!r}".format(
+            landscape_name, ["SimpleHill", "Orientation", "SpatialFrequency"]
+        )
+
+
 
 
 def convert_condition_vars(subj_info):
