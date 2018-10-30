@@ -10,6 +10,7 @@ if not os.path.isdir(simulations_dir):
 
 
 def simulate_random(**kwargs):
+    gems.RandomSimulation.n_trials_per_block = kwargs["n_trials"]
     for seed in range(kwargs["seeds"]):
         output = os.path.join(simulations_dir, "random-seed-{seed}.csv".format(seed=seed))
         simulation = gems.RandomSimulation(seed=seed, output=output)
@@ -17,6 +18,7 @@ def simulate_random(**kwargs):
 
 
 def simulate_optimal(**kwargs):
+    gems.OptimalSimulation.n_trials_per_block = kwargs["n_trials"]
     for seed in range(kwargs["seeds"]):
         output = os.path.join(simulations_dir, "optimal-seed-{seed}.csv".format(seed=seed))
         simulation = gems.OptimalSimulation(seed=seed, output=output)
@@ -30,6 +32,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--type", "-t", choices=simulators.keys(), required=True)
     parser.add_argument("--seeds", "-s", type=int, default=1)
+    parser.add_argument("--n-trials", "-n", type=int, default=8)
     args = parser.parse_args()
     simulator_fn = simulators[args.type]
     simulator_fn(**args.__dict__)
