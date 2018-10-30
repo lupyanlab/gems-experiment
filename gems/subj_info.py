@@ -143,21 +143,18 @@ def verify_subj_info(subj_info):
         except IOError:
             return "can't inherit from '{}': instructions not found".format(ancestor_id)
 
-    landscape_name = subj_info["landscape"]
-    try:
-        getattr(landscape, landscape_name)
-    except AttributeError:
-        return "landscape {!r} not found. Try one of {!r}".format(
-            landscape_name, ["SimpleHill", "Orientation", "SpatialFrequency"]
+    landscape_ix = subj_info["landscape"]
+    if landscape_ix not in landscape.landscape_names:
+        return "landscape '{}' not found. Try one of {!r}".format(
+            landscape_name, landscape_name.keys()
         )
-
-
 
 
 def convert_condition_vars(subj_info):
     new_subj_info = subj_info.copy()
     new_subj_info['filename'] = make_output_filepath(subj_info)
     new_subj_info['generation'] = int(subj_info['generation'])
+    new_subj_info['landscape_name'] = landscape.landscape_names[subj_info['landscape']]
     return new_subj_info
 
 

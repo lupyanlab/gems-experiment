@@ -15,6 +15,10 @@ from .config import LANDSCAPE_FILES
 Gabor = namedtuple('Gabor', 'ori sf')
 Gem = namedtuple('Gem', 'x y ori sf score')
 
+landscape_names = {1: "SimpleHill",
+                   2: "Orientation",
+                   3: "SpatialFrequency"}
+
 
 class Landscape(object):
     """

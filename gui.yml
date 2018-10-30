@@ -13,8 +13,8 @@
   default: ""
 4:
   name: landscape
-  prompt: name of landscape
-  default: SimpleHill
+  prompt: "Landscape identifier [1-3]"
+  default: 1
 5:
   name: experimenter
   prompt: Experimenter initials

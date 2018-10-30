@@ -255,7 +255,7 @@ class Experiment(object):
 
     def run_test_trials(self):
 
-        self.use_landscape(self.get_var("landscape"))
+        self.use_landscape(self.get_var("landscape_name"))
 
         for landscape_ix, start_pos in enumerate([(0,0), (0,0)]):
             if landscape_ix == 1:
@@ -269,7 +269,6 @@ class Experiment(object):
                 generation=self.get_var('generation'),
                 inherit_from=self.get_var('inherit_from'),
                 block_ix=landscape_ix+1,
-                landscape_name=self.landscape.__class__.__name__,
                 starting_pos=pos_to_str(self.pos),
                 starting_score=self.total_score
             )
