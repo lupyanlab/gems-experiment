@@ -16,7 +16,7 @@ from .subj_info import get_subj_info, make_output_filepath, check_output_filepat
 from .inherited_instructions import load_ancestor_instructions
 
 
-EXPERIMENT_VERSION = '1.3'
+EXPERIMENT_VERSION = '1.4'
 
 
 class Experiment(object):

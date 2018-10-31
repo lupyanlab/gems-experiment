@@ -137,7 +137,7 @@ class Landscape(object):
     def score(self, grid_pos):
         """A cached version of get_score."""
         if grid_pos not in self._scores:
-            self._scores[grid_pos] = self.get_score(grid_pos)
+            self._scores[grid_pos] = self.get_score(grid_pos) + 1
         return self._scores[grid_pos]
 
 
