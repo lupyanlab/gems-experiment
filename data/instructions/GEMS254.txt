@@ -1,0 +1,1 @@
+when the line is in low density, the picture that has more dense lines are more valuable, but when the density reach a max valus, it will not increase. also, when the line is nearly vertical , the picture with more horizontal lines is more valuable, but when the lines are nearly horizontal, the picture with more vertical lines is more valuable.

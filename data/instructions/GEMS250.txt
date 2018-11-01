@@ -1,0 +1,1 @@
+Always pick the gem with the most lines, and always pick a gem with the lines at a different angle. The gems with the more vertical lines seem to be worth more than others.

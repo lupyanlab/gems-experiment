@@ -1,0 +1,1 @@
+Gems that are have a steeper slope going from the bottom left to the top allow you to attain more points. As the stripes get closer to the horizontal, this same pattern continues. It also seems that more stripes, as well as more white are also more valueable than the previous gem you selected.
