@@ -1,0 +1,1 @@
+Some gems are more valuable depending on how many black lines are found in them and depending on what angle they are oriented in. Stick the more valuable gems are in between a lot of black lines and a small amount of black lines. They are usually angled slightly to the right.
