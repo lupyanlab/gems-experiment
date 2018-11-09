@@ -15,7 +15,7 @@ data_columns = [
     'subj_id', 'date', 'computer', 'experimenter', 'version',
     'generation', 'inherit_from',
     'sight_radius', 'n_gabors',
-    'block_ix', 'landscape_name', 'starting_pos', 'starting_score',
+    'block_ix', 'landscape_ix', 'landscape_name', 'starting_pos', 'starting_score',
     'trial', 'pos', 'stims',
     'selected', 'rt', 'score', 'delta',
     'exp_time'
