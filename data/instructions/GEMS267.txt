@@ -1,0 +1,1 @@
+Try to pick the gem that looks most like the previous gem that you picked. Try to get the same angle as the previous gem.

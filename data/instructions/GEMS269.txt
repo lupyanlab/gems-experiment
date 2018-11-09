@@ -1,0 +1,1 @@
+I think that you need to have some black on the top and bottom edges, not white. I also think that you want your lines to be slanted a BIT upwards. So you do not want them at an 180 degree angle.

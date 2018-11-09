@@ -1,0 +1,1 @@
+gems whose lines are 45 degrees to the right are more valuable. line thickness is not as important. clearer gems are worth more. the gems on the next page shift following the direction of the lines on the gem you select
