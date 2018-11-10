@@ -305,6 +305,8 @@ class Experiment(object):
             computer = self.get_var('computer'),
             experimenter = self.get_var('experimenter'),
             version=self.get_var('version'),
+            landscape_name=self.get_var('landscape_name'),
+            landscape_ix=self.get_var('landscape_ix'),
             sight_radius = self.sight_radius,
             n_gabors = self.n_gabors,
             pos = pos_to_str(self.pos)

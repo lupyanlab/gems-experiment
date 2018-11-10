@@ -155,6 +155,7 @@ def convert_condition_vars(subj_info):
     new_subj_info['filename'] = make_output_filepath(subj_info)
     new_subj_info['generation'] = int(subj_info['generation'])
     new_subj_info['landscape_name'] = landscape.landscape_names[subj_info['landscape']]
+    new_subj_info['landscape_ix'] = subj_info['landscape']
     return new_subj_info
 
 
