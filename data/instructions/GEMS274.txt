@@ -1,0 +1,1 @@
+Focus more on the ones tilted closest to horizontal.  From there the ones with more lines in them tend to be worth more points.  There could possibly be a connectio between your previously selected gem and the worth of the next one you select.

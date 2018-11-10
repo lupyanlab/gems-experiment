@@ -1,0 +1,1 @@
+the orientation of the gem needs to go clockwise from the initial position and end up being horizontal thin lines
