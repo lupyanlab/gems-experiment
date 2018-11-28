@@ -1,0 +1,1 @@
+The gems with less lines in them have the highest value. When you choose gems with more lines I believe that the next cropping is a selection with more lines. 

@@ -1,0 +1,1 @@
+at the beginning, the more stripes the gem has, the higher the score is. at the end, the wider the stripes are, the higher the score is. observe the slight difference between those gems and try to find the most special and obvious one.

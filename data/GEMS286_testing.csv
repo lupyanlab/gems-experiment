@@ -1,0 +1,2 @@
+subj_id,date,computer,experimenter,version,generation,inherit_from,sight_radius,n_gabors,block_ix,landscape_ix,landscape_name,starting_pos,starting_score,trial,pos,stims,selected,rt,score,delta,exp_time
+GEMS286_testing,2018_Nov_18_1543,Garys-MacBook-Pro.local,AG,1.4,2,GEMS000,10,6,1,1,SimpleHill,0-0,1,0,0-0,8-6;4-9;3-5;0-3;3-3;2-2,4-9,1.61,25,24,38.527121067

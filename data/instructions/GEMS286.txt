@@ -1,0 +1,1 @@
+The gems with a larger amount of thinner black lines seem to get more points. Also, the ones that have the lines oriented in an almost horizontal fashion, but with a small tilt with the lines facing down towards the left and up towards the right. There seems to be no difference if there is white or black left at the top and bottom portions.
